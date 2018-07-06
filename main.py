@@ -10,10 +10,11 @@ if __name__ == "__main__":
     # Print data
     #instance.showData()
 
-    # Create main ro
+    # Create distance matrix
     instance.compute_distance_matrix()
 
     #instance.showData()
     #instance.print_distance_matrix()
 
-    
+    # Create main route
+    instance.create_main_routes()
