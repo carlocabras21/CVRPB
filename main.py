@@ -3,4 +3,17 @@ from utils.file_handler import *
 
 # Main
 if __name__ == "__main__":
-    read_instance("A1")
+
+    # Loading instance
+    instance = read_instance("A1")
+
+    # Print data
+    #instance.showData()
+
+    # Create main ro
+    instance.compute_distance_matrix()
+
+    #instance.showData()
+    #instance.print_distance_matrix()
+
+    
