@@ -1,5 +1,7 @@
+# coding=utf-8
 from scipy.spatial import distance
 from Route import Route
+import time
 
 def compute_distance(i, j):
     return distance.euclidean([i.x, i.y], [j.x, j.y])
@@ -26,3 +28,33 @@ def objective_function(distance_matrix, routes):
 
     return fo
 
+# effettua la minimizzazione della fo
+def minimize_fo(instance):
+    fo_curr = objective_function(instance.distance_matrix, instance.main_routes)
+    soglia = 0.01
+    gain = soglia+1
+
+    # ricerca il miglior scambio per ogni nodo
+
+    start = time.time()
+
+    while(gain >= soglia):
+
+        fo_prec = fo_curr
+
+        # indice route primo nodo
+        for i in range(len(instance.main_routes)):
+            # indice nodo i-esima route primo nodo
+            for m in range(1,len(instance.main_routes[i].linehauls)):
+                # indice route secondo nodo
+                for j in range(len(instance.main_routes)):
+                    # indice nodo j-esima route secondo nodo
+                    for n in range(1,len(instance.main_routes[i].linehauls)):
+                        # cerca migliore scambio e salva le coordinate dello scambio (cioè (route-i,nodo1) (route-j,
+                        # nodo2))
+                        print("")
+        # aggiorna il guadagno
+        gain = (fo_prec - fo_curr) / fo_prec
+
+    end = time.time() - start
+    print("seconds %f" % end)

@@ -1,7 +1,6 @@
 # Import libraries
 from utils.file_handler import *
-from utils.utils import cost
-from utils.utils import objective_function
+from utils.utils import *
 
 # Main
 if __name__ == "__main__":
@@ -26,3 +25,4 @@ if __name__ == "__main__":
     #print(main_fo)
 
     # Dobbiamo minimizzarla -> best exchange
+    minimize_fo(instance)
