@@ -1,5 +1,7 @@
 # Import libraries
 from utils.file_handler import *
+from utils.utils import cost
+from utils.utils import objective_function
 
 # Main
 if __name__ == "__main__":
@@ -18,3 +20,9 @@ if __name__ == "__main__":
 
     # Create main route
     instance.create_main_routes()
+
+    # Calcolo funzione obiettivo
+    main_fo = objective_function(instance.distance_matrix, instance.main_routes)
+    #print(main_fo)
+
+    # Dobbiamo minimizzarla -> best exchange

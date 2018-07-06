@@ -1,7 +1,7 @@
 from Node import Node
 from Route import Route
 import numpy as np
-from utils.utils import compute_distance
+from utils.utils import compute_distance, cost
 import sys
 
 
@@ -120,3 +120,4 @@ class Instance(object):
             routes.append(curr_route)
 
         return routes
+
