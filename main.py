@@ -2,27 +2,27 @@
 from utils.file_handler import *
 from utils.utils import *
 
-# Main
+# Main module
 if __name__ == "__main__":
 
     # Loading instance
     instance = read_instance("A1")
 
-    # Print data
+    # Printing data
     #instance.showData()
 
-    # Create distance matrix
+    # Creating distance matrix
     instance.compute_distance_matrix()
 
     #instance.showData()
     #instance.print_distance_matrix()
 
-    # Create main route
+    # Creating main routes
     instance.create_main_routes()
 
-    # Calcolo funzione obiettivo
+    # Computing objective function
     main_fo = objective_function(instance.distance_matrix, instance.main_routes)
     #print(main_fo)
 
-    # Dobbiamo minimizzarla -> best exchange
+    # Minimizing objective function with best exchange approach
     minimize_fo(instance)

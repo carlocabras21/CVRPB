@@ -1,13 +1,28 @@
-# coding=utf-8
 from scipy.spatial import distance
 from Route import Route
 import time
 
+
 def compute_distance(i, j):
+    """
+    This method computes the euclidean distance between two nodes (customers) i, j.
+
+    :param i: A Node object, the first node
+    :param j: A Node object, the second node
+    :return: the euclidean distance between the two nodes
+    """
     return distance.euclidean([i.x, i.y], [j.x, j.y])
 
-# calcola il costo della route
+
+
 def cost(dist_matrix, route):
+    """
+    This method computes a route's cost as a sum of the individual links between nodes.
+
+    :param dist_matrix: A numpy bi-dimensional array, the distance matrix
+    :param route: A Route object
+    :return: cost, the route's cost
+    """
 
     cost = 0
     full_route = [route.depot_node] + route.linehauls + route.backhauls + [route.depot_node]
@@ -19,22 +34,38 @@ def cost(dist_matrix, route):
 
     return cost
 
-# metodo che restituisce il valore della funzione obiettivo
+
+
 def objective_function(distance_matrix, routes):
+    """
+    This method computes the current value of the objective function.
+
+    :param distance_matrix: A numpy bi-dimensional array, the distance matrix
+    :param routes: A list of Route objects, the current set of routes
+    :return: fo, the objective function's value
+    """
     fo = 0
-    # per ogni route calcolo il costo del collegamento tra due nodi della route
+
+    # computing for each route the cost associated to each adjacent pair of route's nodes
     for route in routes:
         fo += cost(distance_matrix, route)
 
     return fo
 
-# effettua la minimizzazione della fo
+
+
 def minimize_fo(instance):
+    """
+    This function minimizes the objective function's value by implementing the Bext Exchange approach.
+
+    :param instance: An Instance object, the CVRPB instance
+    :return: nothing
+    """
     fo_curr = objective_function(instance.distance_matrix, instance.main_routes)
     soglia = 0.01
     gain = soglia+1
 
-    # ricerca il miglior scambio per ogni nodo
+    # Finding the bext exchange for each route's node
 
     start = time.time()
 
@@ -50,10 +81,11 @@ def minimize_fo(instance):
                 for j in range(len(instance.main_routes)):
                     # indice nodo j-esima route secondo nodo
                     for n in range(1,len(instance.main_routes[i].linehauls)):
-                        # cerca migliore scambio e salva le coordinate dello scambio (cioè (route-i,nodo1) (route-j,
-                        # nodo2))
+                        # cerca migliore scambio e salva le coordinate dello scambio (cioe' (route-i,nodo1) (route-j,
+                        #  nodo2))
                         print("")
-        # aggiorna il guadagno
+
+        # Updating gain
         gain = (fo_prec - fo_curr) / fo_prec
 
     end = time.time() - start
