@@ -39,7 +39,7 @@ class Node(object):
 
     def set_attributes(self, coord_x, coord_y, load, _type, _id):
         """
-            This function updates the parameters of a node
+            This function updates the attributes of a node
 
             :param coord_x: Integer x coordinate
             :param coord_y: Integer y coordinate
