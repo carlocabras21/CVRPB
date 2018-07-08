@@ -1,4 +1,3 @@
-# Import libraries
 from utils.file_handler import *
 from utils.utils import *
 

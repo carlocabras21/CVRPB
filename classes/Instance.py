@@ -1,8 +1,10 @@
+import numpy as np
+import sys
+
 from Node import Node
 from Route import Route
-import numpy as np
-from utils.utils import compute_distance, cost
-import sys
+from utils.utils import compute_distance
+
 
 
 class Instance(object):

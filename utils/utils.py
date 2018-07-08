@@ -1,7 +1,7 @@
 from scipy.spatial import distance
-from Route import Route
 import time
 
+from classes.Node import Node
 
 def compute_distance(i, j):
     """
@@ -90,3 +90,26 @@ def minimize_fo(instance):
 
     end = time.time() - start
     print("seconds %f" % end)
+
+
+def creating_node(coord_x, coord_y, load, type, id):
+    """
+        This function creates a new node.
+
+        :param coord_x: Integer x coordinate
+        :param coord_y: Integer y coordinate
+        :param load: Node load (delivery / pickup)
+        :param type: Node type (0: depot, 1: linehaul, 2:backhaul
+        :param id: Integer id
+        :return: Node instance
+    """
+    node = Node()
+
+    node.x = coord_x
+    node.y = coord_y
+
+    node.load = load
+    node.type = type
+    node.id = id
+
+    return node
