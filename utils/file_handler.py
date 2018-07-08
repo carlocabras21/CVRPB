@@ -1,7 +1,6 @@
 import os
 
-from classes.Instance import Instance
-from utils import creating_node
+from classes.Instance import *
 
 
 # File Handler, da spostare in utils ???
@@ -28,8 +27,7 @@ def read_instance(filename):
         depot_data = fp.readline().split()
 
         # Depot node
-        depot_node = creating_node(int(depot_data[0]), int(depot_data[1]), 0, 0, 0)
-        instance.depot_node = depot_node
+        instance.depot_node = Node(int(depot_data[0]), int(depot_data[1]), 0, 0, 0)
 
         # setting up the vehicles load
         instance.vehicle_load = int(depot_data[3])
@@ -48,14 +46,14 @@ def read_instance(filename):
             # Backhaul node
             if pickup != 0:
                 # Creating a backhaul node
-                backhaul = creating_node(int(data[0]), int(data[1]), pickup, 2, id_counter)
+                backhaul = Node(int(data[0]), int(data[1]), pickup, 2, id_counter)
 
                 # Adding it to list
                 instance.backhaul_list.append(backhaul)
 
             else: # Linehaul node
                 # Creating a linehaul node
-                linehaul = creating_node(int(data[0]), int(data[1]), delivery, 1, id_counter)
+                linehaul = Node(int(data[0]), int(data[1]), delivery, 1, id_counter)
 
                 # Adding it to list
                 instance.linehaul_list.append(linehaul)

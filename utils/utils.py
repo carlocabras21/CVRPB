@@ -93,24 +93,3 @@ def minimize_fo(instance):
     print("seconds %f" % end)
 
 
-def creating_node(coord_x, coord_y, load, _type, _id):
-    """
-        This function creates a new node.
-
-        :param coord_x: Integer x coordinate
-        :param coord_y: Integer y coordinate
-        :param load: Node load (delivery / pickup)
-        :param _type: Node type (0: depot, 1: linehaul, 2:backhaul
-        :param _id: Integer id
-        :return: Node instance
-    """
-    node = Node()
-
-    node.x = coord_x
-    node.y = coord_y
-
-    node.load = load
-    node.type = _type
-    node.id = _id
-
-    return node
