@@ -5,7 +5,7 @@ from classes.Instance import *
 
 # File Handler, da spostare in utils ???
 
-def read_instance(filename):
+def load_instance(filename):
     """
     This method reads an instance file and creates an Instance object, populating it with all the necessary information.
 
@@ -23,16 +23,16 @@ def read_instance(filename):
         fp.readline() # Skipping the default 1 row
         instance.n_vehicles = int(fp.readline())
 
-        # Retriving the Depot node data
+        # Retrives the Depot node data
         depot_data = fp.readline().split()
 
         # Depot node
         instance.depot_node = Node(int(depot_data[0]), int(depot_data[1]), 0, 0, 0)
 
-        # setting up the vehicles load
+        # sets the vehicles load
         instance.vehicle_load = int(depot_data[3])
 
-        # init_id
+        # intializes the id counter
         id_counter = 1
 
         # For each line in the file
@@ -40,23 +40,26 @@ def read_instance(filename):
 
             # Customer data
             data = line.split()
+
+            x = int(data[0])
+            y = int(data[1])
             delivery = int(data[2])
             pickup = int(data[3])
 
-            # Backhaul node
-            if pickup != 0:
-                # Creating a backhaul node
-                backhaul = Node(int(data[0]), int(data[1]), pickup, 2, id_counter)
+            linehaul_type = 1
+            backhaul_type = 2
 
-                # Adding it to list
-                instance.backhaul_list.append(backhaul)
+            if pickup != 0: # Backhaul node
+                # Creates a backhaul node and adds it to the list
+                instance.backhaul_list.append(
+                    Node(x, y, pickup, backhaul_type, id_counter)
+                )
 
             else: # Linehaul node
-                # Creating a linehaul node
-                linehaul = Node(int(data[0]), int(data[1]), delivery, 1, id_counter)
-
-                # Adding it to list
-                instance.linehaul_list.append(linehaul)
+                # Creates a linehaul node and adds it to the list
+                instance.linehaul_list.append(
+                    Node(x, y, delivery, linehaul_type, id_counter)
+                )
 
             # updating id
             id_counter += 1

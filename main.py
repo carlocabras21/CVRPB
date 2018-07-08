@@ -5,7 +5,7 @@ from utils.utils import *
 if __name__ == "__main__":
 
     # Loading instance
-    instance = read_instance("A1")
+    instance = load_instance("A1")
 
     # Printing data
     # instance.showData()
