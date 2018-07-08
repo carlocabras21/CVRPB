@@ -1,6 +1,8 @@
 import os
 
 from classes.Instance import *
+from utils import BACKHAUL_TYPE
+from utils import LINEHAUL_TYPE
 
 
 # File Handler, da spostare in utils ???
@@ -20,7 +22,7 @@ def load_instance(filename):
 
         # Retrieving data about the number of customers and vehicles
         instance.n_customers = int(fp.readline())
-        fp.readline() # Skipping the default 1 row
+        fp.readline()  # Skipping the default 1 row
         instance.n_vehicles = int(fp.readline())
 
         # Retrives the Depot node data
@@ -46,19 +48,16 @@ def load_instance(filename):
             delivery = int(data[2])
             pickup = int(data[3])
 
-            linehaul_type = 1
-            backhaul_type = 2
-
-            if pickup != 0: # Backhaul node
+            if pickup != 0:  # Backhaul node
                 # Creates a backhaul node and adds it to the list
                 instance.backhaul_list.append(
-                    Node(x, y, pickup, backhaul_type, id_counter)
+                    Node(x, y, pickup, BACKHAUL_TYPE, id_counter)
                 )
 
-            else: # Linehaul node
+            else:  # Linehaul node
                 # Creates a linehaul node and adds it to the list
                 instance.linehaul_list.append(
-                    Node(x, y, delivery, linehaul_type, id_counter)
+                    Node(x, y, delivery, LINEHAUL_TYPE, id_counter)
                 )
 
             # updating id

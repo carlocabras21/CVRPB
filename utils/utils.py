@@ -3,6 +3,9 @@ import time
 
 from classes.Node import Node
 
+LINEHAUL_TYPE = 1
+BACKHAUL_TYPE = 2
+
 
 def compute_distance(i, j):
     """
@@ -91,5 +94,3 @@ def minimize_fo(instance):
 
     end = time.time() - start
     print("seconds %f" % end)
-
-
