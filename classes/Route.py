@@ -1,5 +1,6 @@
 from Node import Node
 
+
 class Route(object):
     """
     This class represents a Route in the VRP context.

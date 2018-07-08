@@ -3,6 +3,7 @@ import time
 
 from classes.Node import Node
 
+
 def compute_distance(i, j):
     """
     This method computes the euclidean distance between two nodes (customers) i, j.
@@ -14,7 +15,6 @@ def compute_distance(i, j):
     return distance.euclidean([i.x, i.y], [j.x, j.y])
 
 
-
 def cost(dist_matrix, route):
     """
     This method computes a route's cost as a sum of the individual links between nodes.
@@ -24,16 +24,15 @@ def cost(dist_matrix, route):
     :return: cost, the route's cost
     """
 
-    cost = 0
+    current_cost = 0
     full_route = [route.depot_node] + route.linehauls + route.backhauls + [route.depot_node]
 
     # 0 -> L -> ... -> L -> B -> ... -> B -> 0
-    for i in range(len(full_route)-1):
-        #print(dist_matrix[full_route[i].id, full_route[i+1].id])
-        cost += dist_matrix[full_route[i].id, full_route[i+1].id]
+    for i in range(len(full_route) - 1):
+        # print(dist_matrix[full_route[i].id, full_route[i+1].id])
+        current_cost += dist_matrix[full_route[i].id, full_route[i + 1].id]
 
-    return cost
-
+    return current_cost
 
 
 def objective_function(distance_matrix, routes):
@@ -53,7 +52,6 @@ def objective_function(distance_matrix, routes):
     return fo
 
 
-
 def minimize_fo(instance):
     """
     This function minimizes the objective function's value by implementing the Bext Exchange approach.
@@ -62,45 +60,48 @@ def minimize_fo(instance):
     :return: nothing
     """
     fo_curr = objective_function(instance.distance_matrix, instance.main_routes)
-    soglia = 0.01
-    gain = soglia+1
+    threshold = 0.01
+
+    is_objective_function_improving = True
 
     # Finding the bext exchange for each route's node
 
     start = time.time()
 
-    while(gain >= soglia):
+    while is_objective_function_improving:
 
         fo_prec = fo_curr
 
         # indice route primo nodo
         for i in range(len(instance.main_routes)):
             # indice nodo i-esima route primo nodo
-            for m in range(1,len(instance.main_routes[i].linehauls)):
+            for m in range(1, len(instance.main_routes[i].linehauls)):
                 # indice route secondo nodo
                 for j in range(len(instance.main_routes)):
                     # indice nodo j-esima route secondo nodo
-                    for n in range(1,len(instance.main_routes[i].linehauls)):
+                    for n in range(1, len(instance.main_routes[i].linehauls)):
                         # cerca migliore scambio e salva le coordinate dello scambio (cioe' (route-i,nodo1) (route-j,
                         #  nodo2))
-                        print("")
+                        # print("")
+                        pass
 
         # Updating gain
         gain = (fo_prec - fo_curr) / fo_prec
+        is_objective_function_improving = gain > threshold
 
     end = time.time() - start
     print("seconds %f" % end)
 
 
-def creating_node(coord_x, coord_y, load, type, id):
+def creating_node(coord_x, coord_y, load, _type, _id):
     """
         This function creates a new node.
 
         :param coord_x: Integer x coordinate
         :param coord_y: Integer y coordinate
         :param load: Node load (delivery / pickup)
-        :param type: Node type (0: depot, 1: linehaul, 2:backhaul
-        :param id: Integer id
+        :param _type: Node type (0: depot, 1: linehaul, 2:backhaul
+        :param _id: Integer id
         :return: Node instance
     """
     node = Node()
@@ -109,7 +110,7 @@ def creating_node(coord_x, coord_y, load, type, id):
     node.y = coord_y
 
     node.load = load
-    node.type = type
-    node.id = id
+    node.type = _type
+    node.id = _id
 
     return node

@@ -6,7 +6,6 @@ from Route import Route
 from utils.utils import compute_distance
 
 
-
 class Instance(object):
     """
     This class represents a CVRPB instance.
@@ -28,7 +27,7 @@ class Instance(object):
     n_vehicles = 0
     vehicle_load = 0
 
-    depot_node = Node() # in teoria dovrebbe farlo il costruttore
+    depot_node = Node()  # in teoria dovrebbe farlo il costruttore
 
     linehaul_list = []
     backhaul_list = []
@@ -36,12 +35,10 @@ class Instance(object):
     distance_matrix = np.array([[]])
     main_routes = []
 
-
     def __init__(self):
         pass
 
-
-    def showData(self):
+    def show_data(self):
         """
         This method simply prints informations about the instance itself.
 
@@ -58,7 +55,6 @@ class Instance(object):
         for node in self.linehaul_list:
             print(node)
 
-
     def compute_distance_matrix(self):
         """
         This method produces the distance matrix by computing the euclidean distance between each pair of nodes.
@@ -74,7 +70,6 @@ class Instance(object):
             for j in customers:
                 self.distance_matrix[i.id, j.id] = compute_distance(i, j)
 
-
     def print_distance_matrix(self):
         """
         This function prints the distance matrix in a more readable way.
@@ -86,8 +81,6 @@ class Instance(object):
                 sys.stdout.write('%.1f' % self.distance_matrix[i, j] + " ")
 
             print("\n")
-
-
 
     def create_routes(self, nodes_list):
         """
@@ -111,7 +104,6 @@ class Instance(object):
 
                 # check if it is possible to add a node to the current route
                 if (curr_load + node.load) <= self.vehicle_load:
-
                     # if so, the node is added to the current route
                     curr_route.append(node)
 
@@ -172,7 +164,3 @@ class Instance(object):
         for route in self.main_routes:
             print("Main route")
             print(route)
-
-
-
-

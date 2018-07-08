@@ -14,7 +14,6 @@ class Node(object):
     x = 0
     y = 0
 
-
     def __init__(self):
         pass
 
@@ -25,7 +24,7 @@ class Node(object):
         :return: A string representing the Node object based on the type.
         """
         if self.type == 0:
-            return "%d - Depot (%d,%d)" % (self.id,self.x, self.y)
+            return "%d - Depot (%d,%d)" % (self.id, self.x, self.y)
         if self.type == 1:
             return "%d - Linehaul (%d,%d) %d" % (self.id, self.x, self.y, self.load)
         if self.type == 2:
