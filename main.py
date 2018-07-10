@@ -5,7 +5,7 @@ from utils.utils import *
 if __name__ == "__main__":
 
     # Loading instance
-    instance = load_instance("A1")
+    instance = load_instance("A2")
 
     # Printing data
     # instance.showData()
@@ -21,7 +21,15 @@ if __name__ == "__main__":
 
     # Computing objective function
     main_fo = objective_function(instance.distance_matrix, instance.main_routes)
-    # print(main_fo)
+    print("Main fo")
+    print(main_fo)
 
     # Minimizing objective function with best exchange approach
     minimize_fo(instance)
+
+    print("Final Routes")
+    for route in instance.main_routes:
+        print(route)
+
+    print("Final fo")
+    print(objective_function(instance.distance_matrix, instance.main_routes))

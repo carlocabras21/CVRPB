@@ -97,7 +97,7 @@ class Instance(object):
         while nodes_list:
             curr_route = []
             curr_load = 0
-            print("Route :) ")
+            #print("Route :) ")
 
             # For each node in the list
             for node in nodes_list:
@@ -113,8 +113,8 @@ class Instance(object):
             # Each node in the current route is removed from the main list of nodes
             nodes_list = [x for x in nodes_list if x not in curr_route]
 
-            for k in curr_route:
-                print(k)
+            #for k in curr_route:
+            #    print(k)
 
             # The current route is added to the routes list
             routes.append(curr_route)
@@ -161,6 +161,6 @@ class Instance(object):
 
             self.main_routes.append(curr_route)
 
+        print("Main routes")
         for route in self.main_routes:
-            print("Main route")
             print(route)
