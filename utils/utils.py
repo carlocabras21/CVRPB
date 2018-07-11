@@ -306,7 +306,6 @@ def minimize_fo(instance):
         # print(fo_prec)
         # print(fo_curr)
         # Updating gain
-        gain = (fo_prec - fo_curr) / fo_prec
         # print("gain " + str(gain))
 
         print("")
@@ -359,7 +358,6 @@ def minimize_fo(instance):
             instance.main_routes[exchange_indices[2]].backhauls.remove(first_back)
 
 
-        is_objective_function_improving = gain > threshold
 
         print ("routes after best exchange: ")
         for route in instance.main_routes:
@@ -367,9 +365,10 @@ def minimize_fo(instance):
 
         print("fo_curr: " + str(fo_curr))
 
+        gain = (fo_prec - fo_curr) / fo_prec
+        is_objective_function_improving = gain > threshold
 
-
-
+        
     # print(objective_function(instance.distance_matrix, instance.main_routes))
     end = time.time() - start
     print("seconds %f\n\n" % end)

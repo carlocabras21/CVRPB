@@ -173,6 +173,27 @@ class Instance(object):
 
             self.main_routes.append(curr_route)
 
+
+        while len(self.main_routes) < self.n_vehicles:
+            # Dobbiamo cercare una rotta che ha almeno 2 L e un B
+            i = 0
+            while (len(self.main_routes[i].linehauls) < 2) or (len(self.main_routes[i].backhauls) < 1):
+                i += 1
+
+            line_node = self.main_routes[i].linehauls[0]
+            back_node = self.main_routes[i].backhauls[0]
+
+            self.main_routes[i].linehauls.remove(line_node)
+            self.main_routes[i].backhauls.remove(back_node)
+
+            curr_route = Route()
+
+            curr_route.depot_node = self.depot_node
+            curr_route.linehauls = [line_node]
+            curr_route.backhauls = [back_node]
+
+            self.main_routes.append(curr_route)
+
         print("Main routes")
         for route in self.main_routes:
             print(route)
