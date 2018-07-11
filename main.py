@@ -5,7 +5,9 @@ from utils.utils import *
 if __name__ == "__main__":
 
     # Loading instance
-    instance = load_instance("N6")
+    file_name = "A3.txt"
+    print("instance: " + file_name)
+    instance = load_instance(file_name)
 
     # Printing data
     # instance.showData()
@@ -21,8 +23,7 @@ if __name__ == "__main__":
 
     # Computing objective function
     main_fo = objective_function(instance.distance_matrix, instance.main_routes)
-    print("Main fo")
-    print(main_fo)
+    print("Main fo: " + str(main_fo))
 
     # Minimizing objective function with best exchange approach
     minimize_fo(instance)
@@ -31,5 +32,8 @@ if __name__ == "__main__":
     for route in instance.main_routes:
         print(route)
 
-    print("Final fo")
-    print(objective_function(instance.distance_matrix, instance.main_routes))
+    final_fo = objective_function(instance.distance_matrix, instance.main_routes)
+    print("\nFinal fo: " + str(final_fo))
+
+    gap = (main_fo - final_fo) / main_fo * 100
+    print("gap " + str(gap)[:4] + "%")

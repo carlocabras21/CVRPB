@@ -85,10 +85,11 @@ def minimize_fo(instance):
 
         fo_prec = fo_curr
 
-        #print(fo_prec)
+        # print(fo_prec)
 
-        #print(range(1, len(routes[0]) - 1))
-        #print(range(1, len(routes[1]) - 1))
+        # print(range(1, len(routes[0]) - 1))
+        # print(range(1, len(routes[1]) - 1))
+
         for i in range(len(routes)):
             for m in range(1, len(routes[i]) - 1):
                 # labels
@@ -105,15 +106,19 @@ def minimize_fo(instance):
                 fst_back_ext = routes[i][m].type == BACKHAUL_TYPE and routes[i][m - 1].type == LINEHAUL_TYPE
 
                 if routes[i][m].type == BACKHAUL_TYPE and routes[i][m - 1].type == DEPOT_TYPE:
-                    print("____________rotta sbagliata______________")
+                    print("WRONG ROUTE:")
+                    print(str(instance.main_routes[i]))
+                    exit(2)
 
                 if (fst_line_ext + fst_line_int + fst_back_ext + fst_back_int) != 1:
-                    print("**************************** fst errore:")
+                    print("error in labeling the first node:")
                     print(fst_line_ext + fst_line_int + fst_back_ext + fst_back_int)
                     print(fst_line_ext, fst_line_int, fst_back_ext, fst_back_int)
-                    print(instance.main_routes[i])
+                    print(str(instance.main_routes[i]))
+                    exit(3)
 
-                #print(fst_line_int, fst_line_ext, fst_back_int, fst_back_ext)
+
+                # print(fst_line_int, fst_line_ext, fst_back_int, fst_back_ext)
 
                 for j in range(len(routes)):
                     for n in range(1, len(routes[j]) - 1):
@@ -132,16 +137,18 @@ def minimize_fo(instance):
                         snd_back_ext = routes[j][n].type == BACKHAUL_TYPE and routes[j][n - 1].type == LINEHAUL_TYPE
 
                         if (fst_line_ext + fst_line_int + fst_back_ext + fst_back_int) != 1:
-                            print("**************************** snd errore:")
+                            print("error in labeling the second node:")
                             print(fst_line_ext + fst_line_int + fst_back_ext + fst_back_int)
                             print(fst_line_ext, fst_line_int, fst_back_ext, fst_back_int)
+                            print(str(instance.main_routes[i]))
+                            exit(4)
 
-                        #print(snd_line_int, snd_line_ext, snd_back_int, snd_back_ext)
+                        # print(snd_line_int, snd_line_ext, snd_back_int, snd_back_ext)
 
                         # exchange
                         sub = [0,0,0,0]
                         add = [0,0,0,0]
-                        #print(i,m,j,n)
+                        # print(i,m,j,n)
 
                         if i == j: # Sono sulla stessa route
                             if n == m:
@@ -178,14 +185,14 @@ def minimize_fo(instance):
                             add[3] = instance.distance_matrix[routes[i][m].id, routes[j][n + 1].id]
 
                         fo_exchange = fo_prec - sum(sub) + sum(add)
-                        #print(m,n)
-                        #print(fo_exchange, fo_curr)
-                        #print(fo_exchange)
+                        # print(m,n)
+                        # print(fo_exchange, fo_curr)
+                        # print(fo_exchange)
 
                         if not (i == j and m == n):
                             # LL
                             if (fst_line_int and snd_line_int) or (fst_line_int and snd_line_ext) or (fst_line_ext and snd_line_int) or (fst_line_ext and snd_line_ext):
-                                #print(fst_line_int, snd_line_int)
+                                # print(fst_line_int, snd_line_int)
                                 capacity_route_i = 0
                                 capacity_route_j = 0
 
@@ -206,10 +213,10 @@ def minimize_fo(instance):
                                     exchange_indices[2] = j
                                     exchange_indices[3] = n - 1
 
-                                    print(exchange_indices)
+                                    # print(exchange_indices)
 
                                     exchange_type = "LL"
-                                    #print(exchange_type)
+                                    # print(exchange_type)
 
                             # BB
                             if (fst_back_int and snd_back_int) or (fst_back_int and snd_back_ext) or (fst_back_ext and snd_back_int) or (fst_back_ext and snd_back_ext):
@@ -237,7 +244,7 @@ def minimize_fo(instance):
                                     exchange_indices[3] = n - (len(instance.main_routes[j].linehauls) + 1)
 
                                     exchange_type = "BB"
-                                    #print(exchange_type)
+                                    # print(exchange_type)
 
                             # L -> B
                             if (fst_line_ext and snd_back_ext and i != j):
@@ -264,7 +271,7 @@ def minimize_fo(instance):
                                     exchange_indices[3] = n - (len(instance.main_routes[j].linehauls) + 1)
 
                                     exchange_type = "LB"
-                                    #print(exchange_type)
+                                    # print(exchange_type)
 
                             # B -> L
                             if (fst_back_ext and snd_line_ext and i != j):
@@ -292,15 +299,17 @@ def minimize_fo(instance):
                                     exchange_indices[3] = n - 1
 
                                     exchange_type = "BL"
-                                    #print(exchange_type)
-        print("iter")
-        #print(exchange_type)
-        #print(exchange_indices)
-        #print(fo_prec)
-        #print(fo_curr)
+                                    # print(exchange_type)
+        # print("iter")
+        # print(exchange_type)
+        # print(exchange_indices)
+        # print(fo_prec)
+        # print(fo_curr)
         # Updating gain
         gain = (fo_prec - fo_curr) / fo_prec
-        #print("gain " + str(gain))
+        # print("gain " + str(gain))
+
+        print("")
 
         if exchange_type == "LL":
             print(exchange_type)
@@ -351,13 +360,16 @@ def minimize_fo(instance):
 
 
         is_objective_function_improving = gain > threshold
+
+        print ("routes after best exchange: ")
         for route in instance.main_routes:
            print(route)
 
-    print("\n" + str(fo_curr))
+        print("fo_curr: " + str(fo_curr))
 
 
 
-    print(objective_function(instance.distance_matrix, instance.main_routes))
+
+    # print(objective_function(instance.distance_matrix, instance.main_routes))
     end = time.time() - start
-    print("seconds %f" % end)
+    print("seconds %f\n\n" % end)

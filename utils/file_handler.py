@@ -14,8 +14,8 @@ def load_instance(filename):
     :param filename: a string, the name of the instance file
     :return: instance, an Istance object representing a CVRPB instance
     """
-    if os.path.isfile("data/Instances/" + filename + ".txt"):
-        fp = open("data/Instances/" + filename + ".txt")
+    if os.path.isfile("data/Instances/" + filename):
+        fp = open("data/Instances/" + filename)
 
         # Instantiating a new Instance object
         instance = Instance()

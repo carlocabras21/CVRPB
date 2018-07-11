@@ -136,8 +136,8 @@ class Instance(object):
 
 
 
-        print(len(linehauls_routes))
-        print(len(backhauls_routes))
+        print("n of linehauls routes: " + str(len(linehauls_routes)))
+        print("n of backhauls routes: " + str(len(backhauls_routes)))
 
         # Assuming that linehaul routes are greater that backhaul routes
         if len(backhauls_routes) > len(linehauls_routes):
