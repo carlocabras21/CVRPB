@@ -36,3 +36,17 @@ class Route(object):
         return final_str
 
 
+    def linehauls_load(self):
+        load = 0
+        for node in self.linehauls:
+            load += node.load
+        return load
+
+    def backhauls_load(self):
+        load = 0
+        for node in self.backhauls:
+            load += node.load
+        return load
+
+    def total_load(self):
+        return self.linehauls_load() + self.backhauls_load()
