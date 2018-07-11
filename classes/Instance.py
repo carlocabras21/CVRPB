@@ -134,19 +134,25 @@ class Instance(object):
         linehauls_routes = self.create_routes(linehauls)  # Computing routes of linehauls only
         backhauls_routes = self.create_routes(backhauls)  # Computing routes of backhauls only
 
-
-
         print("n of linehauls routes: " + str(len(linehauls_routes)))
         print("n of backhauls routes: " + str(len(backhauls_routes)))
 
         # Assuming that linehaul routes are greater that backhaul routes
-        if len(backhauls_routes) > len(linehauls_routes):
-            print("Errore, B > L routes :(")
-            if len(backhauls_routes) <= self.n_vehicles:
-                print("CI SONO SPERANZE\nsposta un cazzo di nodo linehaul in quella merda di rotta di soli backhaul")
-            else:
-                print("impegnati di piu'...")
-            exit(1)
+        while len(backhauls_routes) > len(linehauls_routes):
+            i = 0
+            while len(linehauls_routes[i]) <= 1:
+                i += 1
+
+            # In posizione i c'e' una rotta con almeno due nodi linehaul
+
+            #prendo il primo nodo
+            node = linehauls_routes[i][0]
+
+            # lo rimuovo dalla lista corrente in cui sta
+            linehauls_routes[i].remove(node)
+
+            # creo una nuova lista con quel nodo
+            linehauls_routes.append([node])
 
         # Linking linehaul and backhaul routes in pairs, as long as there are backhaul routes
         for i in range(len(backhauls_routes)):

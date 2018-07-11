@@ -5,7 +5,7 @@ from utils.utils import *
 if __name__ == "__main__":
 
     # Loading instance
-    file_name = "A3.txt"
+    file_name = "C1.txt"
     print("instance: " + file_name)
     instance = load_instance(file_name)
 
@@ -35,5 +35,5 @@ if __name__ == "__main__":
     final_fo = objective_function(instance.distance_matrix, instance.main_routes)
     print("\nFinal fo: " + str(final_fo))
 
-    gap = (main_fo - final_fo) / main_fo * 100
-    print("gap " + str(gap)[:4] + "%")
+    improvement = (main_fo - final_fo) / main_fo * 100
+    print("improvement " + str(improvement)[:4] + "%")
