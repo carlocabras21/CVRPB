@@ -134,12 +134,18 @@ class Instance(object):
         linehauls_routes = self.create_routes(linehauls)  # Computing routes of linehauls only
         backhauls_routes = self.create_routes(backhauls)  # Computing routes of backhauls only
 
+
+
         print(len(linehauls_routes))
         print(len(backhauls_routes))
 
         # Assuming that linehaul routes are greater that backhaul routes
         if len(backhauls_routes) > len(linehauls_routes):
             print("Errore, B > L routes :(")
+            if len(backhauls_routes) <= self.n_vehicles:
+                print("CI SONO SPERANZE\nsposta un cazzo di nodo linehaul in quella merda di rotta di soli backhaul")
+            else:
+                print("impegnati di piu'...")
             exit(1)
 
         # Linking linehaul and backhaul routes in pairs, as long as there are backhaul routes

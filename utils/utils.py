@@ -64,7 +64,7 @@ def minimize_fo(instance):
     """
 
     fo_curr = objective_function(instance.distance_matrix, instance.main_routes)
-    threshold = 0.0001
+    threshold = 0.000001
 
     is_objective_function_improving = True
 
