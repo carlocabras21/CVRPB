@@ -176,9 +176,6 @@ def minimize_fo(instance):
                 for j in range(len(routes)):
                     for n in range(1, len(routes[j]) - 1):
 
-                        primo_nodo = routes[i][m]
-                        secondo_nodo = routes[j][n]
-
                         # labels
 
                         snd_line_int, snd_line_ext, snd_back_int, snd_back_ext = get_labels(routes[j], n)
@@ -190,7 +187,7 @@ def minimize_fo(instance):
                         # Controlliamo quale tipo di scambio dev'essere eseguito
                         if not (i == j and m == n):
 
-                            # LL
+                            # L <-> L
                             if (fst_line_int and snd_line_int) or (fst_line_int and snd_line_ext) or (fst_line_ext and snd_line_int) or (fst_line_ext and snd_line_ext):
 
                                 # VERIFICA VINCOLO DI CAPACITA'
@@ -208,7 +205,7 @@ def minimize_fo(instance):
                                     exchange_indices = [i, m - 1, j, n-1]
                                     exchange_type = "LL"
 
-                            # BB
+                            # B <-> B
                             if (fst_back_int and snd_back_int) or (fst_back_int and snd_back_ext) or (fst_back_ext and snd_back_int) or (fst_back_ext and snd_back_ext):
                                 # VERIFICA VINCOLO DI CAPACITA'
 
@@ -227,16 +224,19 @@ def minimize_fo(instance):
                                                         j, n - (len(instance.main_routes[j].linehauls) + 1)]
                                     exchange_type = "BB"
 
-                            # L -> B
+                            # L <-> B
                             if (fst_line_ext and snd_back_ext and i != j):
                                 # VERIFICA VINCOLO DI CAPACITA'
 
                                 # Calcolo il carico delle route
-                                load_line_i = instance.main_routes[i].linehauls_load()
-                                load_line_j = instance.main_routes[j].backhauls_load()
+                                load_back_i = instance.main_routes[i].backhauls_load()
+                                load_line_j = instance.main_routes[j].linehauls_load()
 
-                                if (load_line_i - routes[i][m].load + routes[j][n].load <= instance.vehicle_load) and \
-                                   (load_line_j - routes[j][n].load + routes[i][m].load <= instance.vehicle_load) and \
+                                # Devo verificare che il backhaul di j ci stia nella lista dei backhaul di i e che il linehaul
+                                # di i ci stia nella lista dei linehaul di j
+
+                                if (load_back_i + routes[j][n].load <= instance.vehicle_load) and \
+                                   (load_line_j + routes[i][m].load <= instance.vehicle_load) and \
                                    (fo_exchange < fo_curr):
 
                                     fo_curr = fo_exchange
@@ -245,16 +245,16 @@ def minimize_fo(instance):
                                     exchange_indices = [i, m - 1, j, n - (len(instance.main_routes[j].linehauls) + 1)]
                                     exchange_type = "LB"
 
-                            # B -> L
+                            # B <-> L
                             if (fst_back_ext and snd_line_ext and i != j):
                                 # VERIFICA VINCOLO DI CAPACITA'
 
                                 # Calcolo il carico delle route
-                                load_line_i = instance.main_routes[i].backhauls_load()
-                                load_line_j = instance.main_routes[j].linehauls_load()
+                                load_line_i = instance.main_routes[i].linehauls_load()
+                                load_back_j = instance.main_routes[j].backhauls_load()
 
-                                if (load_line_i - routes[i][m].load + routes[j][n].load <= instance.vehicle_load) and \
-                                   (load_line_j - routes[j][n].load + routes[i][m].load <= instance.vehicle_load) and \
+                                if (load_back_j + routes[i][m].load <= instance.vehicle_load) and \
+                                   (load_line_i + routes[j][n].load <= instance.vehicle_load) and \
                                    (fo_exchange < fo_curr):
 
                                     fo_curr = fo_exchange

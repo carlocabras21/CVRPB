@@ -6,7 +6,7 @@ from copy import deepcopy
 if __name__ == "__main__":
 
     # Loading instance
-    file_name = "A1.txt"
+    file_name = "C1.txt"
     print("instance: " + file_name)
     instance = load_instance(file_name)
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     mains = deepcopy(instance.main_routes)
 
-    for i in range(1):
+    for i in range(10):
 
         #print("i %d" % i)
 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         # Qua modifico curr routes che inizialmente e' formato dalle main routes
         instance.mix_routes_random()
         #print("\nroutes dopo scambi:")
-        instance.print_main_routes()
+        #instance.print_main_routes()
 
         #instance.print_main_routes()
 

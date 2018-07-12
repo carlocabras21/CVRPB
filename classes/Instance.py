@@ -238,7 +238,7 @@ class Instance(object):
 
         # Se la lunghezza di types e' 1 devo fare uno spostamento, altrimenti uno scambio
 
-        for i in range(100):
+        for i in range(300):
 
             if len(types) == 1:
                 # RIPOSIZIONAMENTI LEGALI SENZA SCAMBI, PROPRIO SPOSTAMENTI
@@ -395,7 +395,8 @@ class Instance(object):
 
                     # Controllo se lo scambio rispetta il vincolo di capacita'
                     if (self.main_routes[r1].linehauls_load() + self.main_routes[r2].linehauls[idx2].load <= self.vehicle_load) and \
-                       (self.main_routes[r2].backhauls_load() + self.main_routes[r1].backhauls[idx1].load <= self.vehicle_load):
+                       (self.main_routes[r2].backhauls_load() + self.main_routes[r1].backhauls[idx1].load <= self.vehicle_load) and \
+                       (len(self.main_routes[r2].linehauls) >= 2):
 
                         # SCAMBIO
                         # prendo il backhaul
@@ -436,7 +437,8 @@ class Instance(object):
 
                     # Controllo se lo scambio rispetta il vincolo di capacita'
                     if (self.main_routes[r1].backhauls_load() + self.main_routes[r2].backhauls[idx2].load <= self.vehicle_load) and \
-                       (self.main_routes[r2].linehauls_load() + self.main_routes[r1].linehauls[idx1].load <= self.vehicle_load):
+                       (self.main_routes[r2].linehauls_load() + self.main_routes[r1].linehauls[idx1].load <= self.vehicle_load) and \
+                       (len(self.main_routes[r1].linehauls) >= 2):
 
                         # SCAMBIO
                         # prendo il linehaul
