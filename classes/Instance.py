@@ -296,4 +296,3 @@ class Instance(object):
                         exchange = True
 
                     attempts += 1
-     ok funge

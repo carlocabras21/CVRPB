@@ -35,7 +35,7 @@ if __name__ == "__main__":
         instance.print_curr_routes()
 
 
-        '''
+
         # Computing objective function
         main_fo = objective_function(instance.distance_matrix, instance.main_routes)
         print("Main fo: " + str(main_fo))
@@ -52,4 +52,4 @@ if __name__ == "__main__":
 
         improvement = (main_fo - final_fo) / main_fo * 100
         print("improvement " + str(improvement)[:4] + "%")
-        '''
+

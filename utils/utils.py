@@ -76,7 +76,9 @@ def get_labels(route, node_idx):
     if route[node_idx].type == BACKHAUL_TYPE and route[node_idx - 1].type == LINEHAUL_TYPE:
         return False, False, False, True
 
-    return False, False, False, False
+    print("error in labeling the node: " + str(route[node_idx]) + " in route:")
+    print(str(route))
+    exit(3)
 
 
 def compute_fo_exchange(distance_matrix, routes, i, m, j, n, fo_prec):
@@ -119,6 +121,7 @@ def compute_fo_exchange(distance_matrix, routes, i, m, j, n, fo_prec):
 
     return fo_prec - sum(sub) + sum(add)
 
+
 def minimize_fo(instance):
     """
     This function minimizes the objective function's value by implementing the Bext Exchange approach.
@@ -149,8 +152,9 @@ def minimize_fo(instance):
 
         for i in range(len(routes)):
             for m in range(1, len(routes[i]) - 1):
-
-                exchange_indices = [10000, 11000, 22000, 232393]
+                
+                # indici abbastanza grandi da fare in modo che se non sono assegnati diano errore
+                exchange_indices = [instance.n_customers + 10, instance.n_customers + 10, instance.n_customers + 10, instance.n_customers + 10]
                 exchange_type = "null"
 
                 # Prendo una copia delle route correnti unificate ( D L -- L B -- B D)
@@ -167,26 +171,12 @@ def minimize_fo(instance):
                     print(str(instance.main_routes[i]))
                     exit(2)
 
-                if (fst_line_ext + fst_line_int + fst_back_ext + fst_back_int) != 1:
-                    print("error in labeling the first node:")
-                    print(fst_line_ext + fst_line_int + fst_back_ext + fst_back_int)
-                    print(fst_line_ext, fst_line_int, fst_back_ext, fst_back_int)
-                    print(str(instance.main_routes[i]))
-                    exit(3)
-
                 for j in range(len(routes)):
                     for n in range(1, len(routes[j]) - 1):
 
                         # labels
 
                         snd_line_int, snd_line_ext, snd_back_int, snd_back_ext = get_labels(routes[j], n)
-
-                        if (snd_line_int + snd_line_ext + snd_back_int + snd_back_ext) != 1:
-                            print("error in labeling the second node:")
-                            print(snd_line_ext + snd_line_int + snd_back_ext + snd_back_int)
-                            print(snd_line_ext, snd_line_int, snd_back_ext, snd_back_int)
-                            print(str(instance.main_routes[j]))
-                            exit(4)
 
                         # EXCHANGE TIME
 
