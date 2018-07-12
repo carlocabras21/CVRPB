@@ -154,7 +154,10 @@ def minimize_fo(instance):
             for m in range(1, len(routes[i]) - 1):
                 
                 # indici abbastanza grandi da fare in modo che se non sono assegnati diano errore
-                exchange_indices = [instance.n_customers + 10, instance.n_customers + 10, instance.n_customers + 10, instance.n_customers + 10]
+                exchange_indices = [9999999999,
+                                    9999999999,
+                                    9999999999,
+                                    9999999999]
                 exchange_type = "null"
 
                 # Prendo una copia delle route correnti unificate ( D L -- L B -- B D)
@@ -263,10 +266,6 @@ def minimize_fo(instance):
 
                 if exchange_type == "LL":
 
-                    print(exchange_type)
-                    print(instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]])
-                    print(instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]])
-
                     supp_node = instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]]
 
                     instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]] = \
@@ -276,10 +275,6 @@ def minimize_fo(instance):
 
                 if exchange_type == "BB":
 
-                    print(exchange_type)
-                    print(instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]])
-                    print(instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]])
-
                     supp_node = instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]]
 
                     instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]] = \
@@ -288,10 +283,6 @@ def minimize_fo(instance):
                     instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]] = supp_node
 
                 if exchange_type == "BL":
-
-                    print(exchange_type)
-                    print(instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]])
-                    print(instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]])
 
                     # spostamento backhaul
                     first_back = instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]]
@@ -310,10 +301,6 @@ def minimize_fo(instance):
 
                 if exchange_type == "LB":
 
-                    print(exchange_type)
-                    print(instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]])
-                    print(instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]])
-
                     # spostamento linehaul
                     last_line = instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]]
 
@@ -329,26 +316,16 @@ def minimize_fo(instance):
 
                     instance.main_routes[exchange_indices[2]].backhauls.remove(first_back)
 
+                #if int(fo_curr) != int(objective_function(instance.distance_matrix, instance.main_routes)):
+                 #   print("ERRORE: fo: " + str(objective_function(instance.distance_matrix, instance.main_routes)))
 
-                print ("nuove rotte: ")
-                for route in instance.main_routes:
-                   print(route)
-
-                print("fo_curr: " + str(fo_curr))
-
-                if int(fo_curr) != int(objective_function(instance.distance_matrix, instance.main_routes)):
-                    print("ERRORE: fo: " + str(objective_function(instance.distance_matrix, instance.main_routes)))
 
         gain = (fo_ext - fo_curr) / fo_ext
-        print(gain)
+        # print(gain)
         is_objective_function_improving = gain > threshold
 
 
     # print(objective_function(instance.distance_matrix, instance.main_routes))
     end = time.time() - start
-
-    print("seconds %f\n\n" % end)
-    print("Exchangesssss " + str(n_exch))
-    print("\n")
 
 

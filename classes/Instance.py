@@ -37,7 +37,7 @@ class Instance(object):
     distance_matrix = np.array([[]])
     main_routes = []
 
-    current_routes = []
+    #current_routes = []
 
     def __init__(self):
         pass
@@ -224,75 +224,91 @@ class Instance(object):
 
     # Tramite tale metodo partendo dalle current route le permuto in maniera casuale sia internamente che non
     def mix_routes_random(self):
-        # parto dalle main routes!!! Le copio proprio, non faccio un riferimento
-        self.current_routes = deepcopy(self.main_routes)
-
 
         # SCAMBI AMMISSIBILI : cioe' scambi a random che peggiorano/migliorano la fo, ma non ci interessa, basta che permettano
         # di rispettare il vincolo di capacita'
 
-        # Genero due indici random di due route esistenti tra quelle correnti
-        r1 = randint(0, len(self.current_routes) - 1)
-        r2 = randint(0, len(self.current_routes) - 1)
+        types = ["LL", "BB"]
 
-        # Se vale 1 scambio linehauls altrimenti backhauls tra le rotte. Se non ci sono backhauls scambio linehauls o se
-        # c'e' almeno un backhaul lo metto nell'altra rotta ecc. 3 scambio linehauls e backhauls tra loro da fare poi
-        #choose = randint(1,2,3)
-        choose = 1
-        print(r1, r2, choose)
-        self.legal_exchange(self.current_routes[r1], self.current_routes[r2], choose)
+        for i in range(self.n_customers):
+            # Genero due indici random di due route esistenti tra quelle correnti
+            r1 = randint(0, len(self.main_routes) - 1)
+            r2 = randint(0, len(self.main_routes) - 1)
+            choose = randint(0,1)
 
-        '''
-        # PERMUTAZIONE : DA SOLA NON BASTA! MI CONVIENE PRIMA FARE ALCUNI SCAMBI AMMISSIBILI RANDOM TRA LE ROTTE
-        # per ogni rotta
-        for route in self.current_routes:
-            # la permuto internamente nella sua parte linehaul e backhaul distintamente
-            shuffle(route.linehauls)
-            shuffle(route.backhauls)
-        '''
+            exhange_type = types[choose]
+
+            self.random_legal_exchange(r1, r2, exhange_type)
+
+
+            # PERMUTAZIONE : DA SOLA NON BASTA! MI CONVIENE PRIMA FARE ALCUNI SCAMBI AMMISSIBILI RANDOM TRA LE ROTTE
+            # per ogni rotta
+            for route in self.main_routes:
+                # la permuto internamente nella sua parte linehaul e backhaul distintamente
+                shuffle(route.linehauls)
+                shuffle(route.backhauls)
+
+
 
     def print_main_routes(self):
         print("Main Routes")
         for route in self.main_routes:
             print(route)
-
-    def print_curr_routes(self):
-        print("Current Routes")
-        for route in self.current_routes:
-            print(route)
+        print("\n")
 
 
-    def legal_exchange(self, route1, route2, choose):
+    def random_legal_exchange(self, r1, r2, exhange_type):
 
-        # Choose 1 : scambio due LL
-        if choose == 1:
+        # exhange_type 1 : scambio due LL
+        if exhange_type == "LL":
             exchange = False # False se non ho scambiato, True se effettuo uno scambio
             attempts = 1 # tentativi di scambio
 
             # Finche' non effettuo uno scambio o finche' non finisco i possibili tentativi
-            while not exchange and (attempts <= (len(route1.linehauls)) * (len(route2.linehauls))):
+            while not exchange and (attempts <= (len(self.main_routes[r1].linehauls)) * (len(self.main_routes[r2].linehauls))):
 
                 # Genero due indici random di due linehaul
-                idx1 = randint(0, len(route1.linehauls) - 1)
-                idx2 = randint(0, len(route2.linehauls) - 1)
+                idx1 = randint(0, len(self.main_routes[r1].linehauls) - 1)
+                idx2 = randint(0, len(self.main_routes[r2].linehauls) - 1)
 
                 # In caso di stessa rotta evito che tenti di scambiare il nodo con se stesso
-                if idx1 != idx2:
-                    print(exchange)
-                    print("Tentativo : %d" % attempts)
-                    print(route1.linehauls[idx1])
-                    print(route2.linehauls[idx2])
-                    print("\n")
-
+                if not (idx1 == idx2 and self.main_routes[r1] == self.main_routes[r2]):
 
                     # Controllo se lo scambio rispetta il vincolo di capacita'
-                    if (route1.linehauls_load() - route1.linehauls[idx1].load + route2.linehauls[idx2].load <= self.vehicle_load) and \
-                       (route2.linehauls_load() - route2.linehauls[idx2].load + route1.linehauls[idx1].load <= self.vehicle_load):
+                    if (self.main_routes[r1].linehauls_load() - self.main_routes[r1].linehauls[idx1].load + self.main_routes[r2].linehauls[idx2].load <= self.vehicle_load) and \
+                       (self.main_routes[r2].linehauls_load() - self.main_routes[r2].linehauls[idx2].load + self.main_routes[r1].linehauls[idx1].load <= self.vehicle_load):
 
                         # SCAMBIO
-                        supp_node = route1.linehauls[idx1]
-                        route1.linehauls[idx1] = route2.linehauls[idx2]
-                        route2.linehauls[idx2] = supp_node
+                        supp_node = self.main_routes[r1].linehauls[idx1]
+                        self.main_routes[r1].linehauls[idx1] = self.main_routes[r2].linehauls[idx2]
+                        self.main_routes[r2].linehauls[idx2] = supp_node
                         exchange = True
 
-                    attempts += 1
+                attempts += 1
+
+        # exhange_type 1 : scambio due BB
+        else:
+            exchange = False # False se non ho scambiato, True se effettuo uno scambio
+            attempts = 1 # tentativi di scambio
+
+            # Finche' non effettuo uno scambio o finche' non finisco i possibili tentativi
+            while not exchange and (attempts <= (len(self.main_routes[r1].backhauls)) * (len(self.main_routes[r2].backhauls))):
+
+                # Genero due indici random di due linehaul
+                idx1 = randint(0, len(self.main_routes[r1].backhauls) - 1)
+                idx2 = randint(0, len(self.main_routes[r2].backhauls) - 1)
+
+                # In caso di stessa rotta evito che tenti di scambiare il nodo con se stesso
+                if not (idx1 == idx2 and self.main_routes[r1] == self.main_routes[r2]):
+
+                    # Controllo se lo scambio rispetta il vincolo di capacita'
+                    if (self.main_routes[r1].backhauls_load() - self.main_routes[r1].backhauls[idx1].load + self.main_routes[r2].backhauls[idx2].load <= self.vehicle_load) and \
+                       (self.main_routes[r2].backhauls_load() - self.main_routes[r2].backhauls[idx2].load + self.main_routes[r1].backhauls[idx1].load <= self.vehicle_load):
+
+                        # SCAMBIO
+                        supp_node = self.main_routes[r1].backhauls[idx1]
+                        self.main_routes[r1].backhauls[idx1] = self.main_routes[r2].backhauls[idx2]
+                        self.main_routes[r2].backhauls[idx2] = supp_node
+                        exchange = True
+
+                attempts += 1
