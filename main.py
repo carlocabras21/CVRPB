@@ -21,6 +21,8 @@ if __name__ == "__main__":
     # Creating main routes
     instance.create_main_routes()
 
+    optimal_cost = load_solution(file_name)
+    
     # Dopo che ho una soluzione iniziale deterministica (main routes) devo effettuare degli scambi e/o permutazioni random
     # per esplorare lo spazio delle soluzioni dove applicare local search
 
@@ -60,3 +62,6 @@ if __name__ == "__main__":
 
     print("\nLast.")
     instance.print_main_routes()
+
+    gap = ((min_fo - optimal_cost) / optimal_cost) * 100
+    print("\n GAP: %.2f " % gap + str("%"))
