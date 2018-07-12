@@ -144,15 +144,6 @@ class Instance(object):
         linehauls_routes = self.create_routes(linehauls)  # Computing routes of linehauls only
         backhauls_routes = self.create_routes(backhauls)  # Computing routes of backhauls only
 
-        # PERMUTATION
-        '''
-        for route in linehauls_routes:
-            shuffle(route)
-
-        for route in backhauls_routes:
-            shuffle(route)
-        '''
-
         print("n of linehauls routes: " + str(len(linehauls_routes)))
         print("n of backhauls routes: " + str(len(backhauls_routes)))
         print("n of vehicles: " + str(self.n_vehicles))
@@ -240,26 +231,26 @@ class Instance(object):
 
         for i in range(300):
 
-            if len(types) == 1:
-                # RIPOSIZIONAMENTI LEGALI SENZA SCAMBI, PROPRIO SPOSTAMENTI
+            # SCAMBI LEGALI
+            # Genero due indici random di due route esistenti tra quelle correnti
+            r1 = rnd.randint(0, len(self.main_routes) - 1)
+            r2 = rnd.randint(0, len(self.main_routes) - 1)
+            choose = rnd.randint(2,5)
+            #print(choose)
 
-                    # Genero due indici random di due route esistenti tra quelle correnti
-                    r1 = rnd.randint(0, len(self.main_routes) - 1)
-                    r2 = rnd.randint(0, len(self.main_routes) - 1)
-                    choose = rnd.randint(0, 1)
-                    exhange_type = types[choose]
+            exhange_type = types[choose]
 
-            else:
-                    # SCAMBI LEGALI
-                    # Genero due indici random di due route esistenti tra quelle correnti
-                    r1 = rnd.randint(0, len(self.main_routes) - 1)
-                    r2 = rnd.randint(0, len(self.main_routes) - 1)
-                    choose = rnd.randint(2,5)
-                    #print(choose)
+            self.random_legal_exchange(r1, r2, exhange_type)
 
-                    exhange_type = types[choose]
+            '''
+            # RIPOSIZIONAMENTI LEGALI SENZA SCAMBI, PROPRIO SPOSTAMENTI
 
-                    self.random_legal_exchange(r1, r2, exhange_type)
+            # Genero due indici random di due route esistenti tra quelle correnti
+            r1 = rnd.randint(0, len(self.main_routes) - 1)
+            r2 = rnd.randint(0, len(self.main_routes) - 1)
+            choose = rnd.randint(0, 1)
+            exhange_type = types[choose]
+            '''
 
         '''
         # PERMUTAZIONE : DA SOLA NON BASTA! MI CONVIENE PRIMA FARE ALCUNI SCAMBI AMMISSIBILI RANDOM TRA LE ROTTE
@@ -326,7 +317,7 @@ class Instance(object):
                         attempts += 1
 
     def random_legal_exchange(self, r1, r2, exhange_type):
-        print(exhange_type)
+        #print(exhange_type)
         # exhange_type 1 : scambio due LL
         if exhange_type == "LL":
             exchange = False # False se non ho scambiato, True se effettuo uno scambio
