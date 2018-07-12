@@ -89,7 +89,6 @@ def compute_fo_exchange(distance_matrix, routes, i, m, j, n, fo_prec):
         else:
             if n == m + 1:  # i nodi da scambiare sono attaccati
                 sub[0] = distance_matrix[routes[i][m - 1].id, routes[i][m].id]
-                #sub[1] = distance_matrix[routes[i][n - 1].id, routes[i][n].id] Error
                 sub[1] = distance_matrix[routes[i][n].id, routes[i][n + 1].id]
 
                 add[0] = distance_matrix[routes[i][m - 1].id, routes[i][n].id]
@@ -140,19 +139,25 @@ def minimize_fo(instance):
 
     while is_objective_function_improving:
 
-        exchange_indices = [10000,11000,22000,232393]
-        exchange_type = "null"
-
         # Prendo una copia delle route correnti unificate ( D L -- L B -- B D)
         routes = instance.get_unified_routes()
 
         # Aggiorno la fo "da battere"
-        fo_prec = fo_curr
+        fo_ext = fo_curr
 
         # BEST EXCHANGE
 
         for i in range(len(routes)):
             for m in range(1, len(routes[i]) - 1):
+
+                exchange_indices = [10000, 11000, 22000, 232393]
+                exchange_type = "null"
+
+                # Prendo una copia delle route correnti unificate ( D L -- L B -- B D)
+                routes = instance.get_unified_routes()
+
+                # Aggiorno la fo "da battere"
+                fo_prec = fo_curr
 
                 # labels
                 fst_line_int, fst_line_ext, fst_back_int, fst_back_ext = get_labels(routes[i], m)
@@ -205,10 +210,7 @@ def minimize_fo(instance):
 
                                     fo_curr = fo_exchange
 
-                                    exchange_indices[0] = i
-                                    exchange_indices[1] = m - 1
-                                    exchange_indices[2] = j
-                                    exchange_indices[3] = n - 1
+                                    exchange_indices = [i, m - 1, j, n-1]
                                     exchange_type = "LL"
 
                             # BB
@@ -226,10 +228,8 @@ def minimize_fo(instance):
                                     fo_curr = fo_exchange
 
                                     # salviamo gli indici
-                                    exchange_indices[0] = i
-                                    exchange_indices[1] = m - (len(instance.main_routes[i].linehauls) + 1)
-                                    exchange_indices[2] = j
-                                    exchange_indices[3] = n - (len(instance.main_routes[j].linehauls) + 1)
+                                    exchange_indices = [i, m - (len(instance.main_routes[i].linehauls) + 1),
+                                                        j, n - (len(instance.main_routes[j].linehauls) + 1)]
                                     exchange_type = "BB"
 
                             # L -> B
@@ -247,10 +247,7 @@ def minimize_fo(instance):
                                     fo_curr = fo_exchange
 
                                     # salviamo gli indici
-                                    exchange_indices[0] = i
-                                    exchange_indices[1] = m - 1
-                                    exchange_indices[2] = j
-                                    exchange_indices[3] = n - (len(instance.main_routes[j].linehauls) + 1)
+                                    exchange_indices = [i, m - 1, j, n - (len(instance.main_routes[j].linehauls) + 1)]
                                     exchange_type = "LB"
 
                             # B -> L
@@ -268,79 +265,100 @@ def minimize_fo(instance):
                                     fo_curr = fo_exchange
 
                                     # salviamo gli indici
-                                    exchange_indices[0] = i
-                                    exchange_indices[1] = m - (len(instance.main_routes[i].linehauls) + 1)
-                                    exchange_indices[2] = j
-                                    exchange_indices[3] = n - 1
+                                    exchange_indices = [i, m - (len(instance.main_routes[i].linehauls) + 1), j, n-1]
                                     exchange_type = "BL"
 
-        print("")
-        n_exch += 1
+                #print("")
+                n_exch += 1
 
-        if exchange_type == "LL":
-            print(exchange_type)
-            print(instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]])
-            print(instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]])
-            supp_node = instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]]
-            instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]] = instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]]
-            instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]] = supp_node
+                if exchange_type == "LL":
 
-        if exchange_type == "BB":
-            print(exchange_type)
-            print(instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]])
-            print(instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]])
+                    print(exchange_type)
+                    print(instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]])
+                    print(instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]])
 
-            supp_node = instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]]
-            instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]] = instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]]
-            instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]] = supp_node
+                    supp_node = instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]]
 
-        if exchange_type == "BL":
-            print(exchange_type)
-            print(instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]])
-            print(instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]])
+                    instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]] = \
+                        instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]]
 
-            # spostamento backhaul
-            first_back = instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]]
-            instance.main_routes[exchange_indices[2]].backhauls = [first_back] + instance.main_routes[exchange_indices[2]].backhauls
-            instance.main_routes[exchange_indices[0]].backhauls.remove(first_back)
+                    instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]] = supp_node
 
-            # spostamento linehaul
-            last_line = instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]]
-            instance.main_routes[exchange_indices[0]].linehauls.append(last_line)
-            instance.main_routes[exchange_indices[2]].linehauls.remove(last_line)
+                if exchange_type == "BB":
 
-        if exchange_type == "LB":
-            print(exchange_type)
-            print(instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]])
-            print(instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]])
+                    print(exchange_type)
+                    print(instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]])
+                    print(instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]])
 
-            # spostamento linehaul
-            last_line = instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]]
-            instance.main_routes[exchange_indices[2]].linehauls.append(last_line)
-            instance.main_routes[exchange_indices[0]].linehauls.remove(last_line)
+                    supp_node = instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]]
 
-            # spostamento backhaul
-            first_back = instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]]
-            instance.main_routes[exchange_indices[0]].backhauls = [first_back] + instance.main_routes[exchange_indices[0]].backhauls
-            instance.main_routes[exchange_indices[2]].backhauls.remove(first_back)
+                    instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]] = \
+                        instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]]
+
+                    instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]] = supp_node
+
+                if exchange_type == "BL":
+
+                    print(exchange_type)
+                    print(instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]])
+                    print(instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]])
+
+                    # spostamento backhaul
+                    first_back = instance.main_routes[exchange_indices[0]].backhauls[exchange_indices[1]]
+
+                    instance.main_routes[exchange_indices[2]].backhauls = \
+                    [first_back] + instance.main_routes[exchange_indices[2]].backhauls
+
+                    instance.main_routes[exchange_indices[0]].backhauls.remove(first_back)
+
+                    # spostamento linehaul
+                    last_line = instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]]
+
+                    instance.main_routes[exchange_indices[0]].linehauls.append(last_line)
+
+                    instance.main_routes[exchange_indices[2]].linehauls.remove(last_line)
+
+                if exchange_type == "LB":
+
+                    print(exchange_type)
+                    print(instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]])
+                    print(instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]])
+
+                    # spostamento linehaul
+                    last_line = instance.main_routes[exchange_indices[0]].linehauls[exchange_indices[1]]
+
+                    instance.main_routes[exchange_indices[2]].linehauls.append(last_line)
+
+                    instance.main_routes[exchange_indices[0]].linehauls.remove(last_line)
+
+                    # spostamento backhaul
+                    first_back = instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]]
+
+                    instance.main_routes[exchange_indices[0]].backhauls = \
+                        [first_back] + instance.main_routes[exchange_indices[0]].backhauls
+
+                    instance.main_routes[exchange_indices[2]].backhauls.remove(first_back)
 
 
+                print ("nuove rotte: ")
+                for route in instance.main_routes:
+                   print(route)
 
-        print ("routes after best exchange: ")
-        for route in instance.main_routes:
-           print(route)
+                print("fo_curr: " + str(fo_curr))
 
-        print("fo_curr: " + str(fo_curr))
+                if int(fo_curr) != int(objective_function(instance.distance_matrix, instance.main_routes)):
+                    print("ERRORE: fo: " + str(objective_function(instance.distance_matrix, instance.main_routes)))
 
-        if int(fo_curr) != int(objective_function(instance.distance_matrix, instance.main_routes)):
-            print("ERRORE: fo: " + str(objective_function(instance.distance_matrix, instance.main_routes)))
-
-        gain = (fo_prec - fo_curr) / fo_prec
+        gain = (fo_ext - fo_curr) / fo_ext
+        print(gain)
         is_objective_function_improving = gain > threshold
 
 
     # print(objective_function(instance.distance_matrix, instance.main_routes))
     end = time.time() - start
+
     print("seconds %f\n\n" % end)
     print("Exchangesssss " + str(n_exch))
     print("\n")
+
+

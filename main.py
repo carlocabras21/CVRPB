@@ -5,7 +5,7 @@ from utils.utils import *
 if __name__ == "__main__":
 
     # Loading instance
-    file_name = "N1.txt"
+    file_name = "A1.txt"
     print("instance: " + file_name)
     instance = load_instance(file_name)
 
@@ -21,19 +21,35 @@ if __name__ == "__main__":
     # Creating main routes
     instance.create_main_routes()
 
-    # Computing objective function
-    main_fo = objective_function(instance.distance_matrix, instance.main_routes)
-    print("Main fo: " + str(main_fo))
 
-    # Minimizing objective function with best exchange approach
-    minimize_fo(instance)
+    # Dopo che ho una soluzione iniziale deterministica (main routes) devo effettuare degli scambi e/o permutazioni random
+    # per esplorare lo spazio delle soluzioni dove applicare local search
 
-    print("Final Routes")
-    for route in instance.main_routes:
-        print(route)
+    # supponiamo di fare 50 permutazioni
+    for i in range(1):
 
-    final_fo = objective_function(instance.distance_matrix, instance.main_routes)
-    print("\nFinal fo: " + str(final_fo))
+        # Qua modifico curr routes che inizialmente e' formato dalle main routes
+        instance.mix_routes_random()
 
-    improvement = (main_fo - final_fo) / main_fo * 100
-    print("improvement " + str(improvement)[:4] + "%")
+        instance.print_main_routes()
+        instance.print_curr_routes()
+
+
+        '''
+        # Computing objective function
+        main_fo = objective_function(instance.distance_matrix, instance.main_routes)
+        print("Main fo: " + str(main_fo))
+
+        # Minimizing objective function with best exchange approach
+        minimize_fo(instance)
+
+        print("Final Routes")
+        for route in instance.main_routes:
+            print(route)
+
+        final_fo = objective_function(instance.distance_matrix, instance.main_routes)
+        print("\nFinal fo: " + str(final_fo))
+
+        improvement = (main_fo - final_fo) / main_fo * 100
+        print("improvement " + str(improvement)[:4] + "%")
+        '''

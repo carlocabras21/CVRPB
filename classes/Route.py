@@ -22,16 +22,25 @@ class Route(object):
 
         :return: a string representing the Route object D -> L -> ... -> L [-> B -> ... -> B] -> D.
         """
+
         final_str = ""
         final_str += " D" + str(self.depot_node.id)
 
         for l in self.linehauls:
-            final_str += " L" + str(l.id)
+            final_str += " L" + str(l.id) #+ " (" + str(l.load) + ") "
+
+        final_str += " LoadL " + str(self.linehauls_load())
+
 
         for b in self.backhauls:
-            final_str += " B" + str(b.id)
+            final_str += " B" + str(b.id) #+ " (" + str(b.load) + ") "
+
+        final_str += " LoadB " + str(self.backhauls_load())
+
 
         final_str += " D" + str(self.depot_node.id)
+
+        final_str += " LoadT " + str(self.total_load())
 
         return final_str
 
