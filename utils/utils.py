@@ -131,7 +131,6 @@ def minimize_fo(instance):
     """
 
     fo_curr = objective_function(instance.distance_matrix, instance.main_routes)
-    threshold = 0.00000000001
 
     is_objective_function_improving = True
 
@@ -152,7 +151,7 @@ def minimize_fo(instance):
 
         for i in range(len(routes)):
             for m in range(1, len(routes[i]) - 1):
-                
+
                 # indici abbastanza grandi da fare in modo che se non sono assegnati diano errore
                 exchange_indices = [9999999999,
                                     9999999999,
@@ -176,6 +175,9 @@ def minimize_fo(instance):
 
                 for j in range(len(routes)):
                     for n in range(1, len(routes[j]) - 1):
+
+                        primo_nodo = routes[i][m]
+                        secondo_nodo = routes[j][n]
 
                         # labels
 
@@ -262,7 +264,6 @@ def minimize_fo(instance):
                                     exchange_type = "BL"
 
                 #print("")
-                n_exch += 1
 
                 if exchange_type == "LL":
 
@@ -272,6 +273,7 @@ def minimize_fo(instance):
                         instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]]
 
                     instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]] = supp_node
+                    n_exch += 1
 
                 if exchange_type == "BB":
 
@@ -281,6 +283,7 @@ def minimize_fo(instance):
                         instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]]
 
                     instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]] = supp_node
+                    n_exch += 1
 
                 if exchange_type == "BL":
 
@@ -298,6 +301,7 @@ def minimize_fo(instance):
                     instance.main_routes[exchange_indices[0]].linehauls.append(last_line)
 
                     instance.main_routes[exchange_indices[2]].linehauls.remove(last_line)
+                    n_exch += 1
 
                 if exchange_type == "LB":
 
@@ -315,14 +319,15 @@ def minimize_fo(instance):
                         [first_back] + instance.main_routes[exchange_indices[0]].backhauls
 
                     instance.main_routes[exchange_indices[2]].backhauls.remove(first_back)
+                    n_exch += 1
 
                 #if int(fo_curr) != int(objective_function(instance.distance_matrix, instance.main_routes)):
                  #   print("ERRORE: fo: " + str(objective_function(instance.distance_matrix, instance.main_routes)))
 
 
-        gain = (fo_ext - fo_curr) / fo_ext
+        gain = fo_ext - fo_curr
         # print(gain)
-        is_objective_function_improving = gain > threshold
+        is_objective_function_improving = gain > 0
 
 
     # print(objective_function(instance.distance_matrix, instance.main_routes))

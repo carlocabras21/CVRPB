@@ -1,5 +1,6 @@
 from utils.file_handler import *
 from utils.utils import *
+from copy import deepcopy
 
 # Main module
 if __name__ == "__main__":
@@ -33,19 +34,32 @@ if __name__ == "__main__":
 
     min_fo = objective_function(instance.distance_matrix, instance.main_routes)
     print("fo di partenza : %f" % min_fo)
+    '''
+    # Minimizing objective function with best exchange approach
+    minimize_fo(instance)
 
+    final_fo = objective_function(instance.distance_matrix, instance.main_routes)
+
+    print("Final fo;) %f " % final_fo)
+
+    gap = ((final_fo - optimal_cost) / optimal_cost) * 100
+    print("\n GAP: %.2f " % gap + str("%"))
+
+'''
     best_routes = deepcopy(instance.main_routes)
 
     mains = deepcopy(instance.main_routes)
-    # supponiamo di fare 50 permutazioni
-    for i in range(100):
 
-        instance.main_routes = mains
+    for i in range(1):
+
+        #print("i %d" % i)
+
+        #instance.main_routes = mains
 
         # Qua modifico curr routes che inizialmente e' formato dalle main routes
         instance.mix_routes_random()
         #print("\nroutes dopo scambi:")
-        #instance.print_main_routes()
+        instance.print_main_routes()
 
         #instance.print_main_routes()
 
@@ -53,11 +67,13 @@ if __name__ == "__main__":
         minimize_fo(instance)
 
         final_fo = objective_function(instance.distance_matrix, instance.main_routes)
-        #print(final_fo)
+
+        print(final_fo)
+
         if final_fo < min_fo:
             min_fo = final_fo
             best_routes = deepcopy(instance.main_routes)
-
+    
     print("min;) %f " % min_fo)
 
     print("\nLast.")

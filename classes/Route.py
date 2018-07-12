@@ -14,7 +14,9 @@ class Route(object):
     backhauls = []
 
     def __init__(self):
-        pass
+        self.depot_node = Node()
+        self.linehaul = []
+        self.backhauls = []
 
     def __str__(self):
         """
@@ -29,18 +31,16 @@ class Route(object):
         for l in self.linehauls:
             final_str += " L" + str(l.id) #+ " (" + str(l.load) + ") "
 
-        final_str += " LoadL " + str(self.linehauls_load())
-
-
         for b in self.backhauls:
             final_str += " B" + str(b.id) #+ " (" + str(b.load) + ") "
 
-        final_str += " LoadB " + str(self.backhauls_load())
 
 
         final_str += " D" + str(self.depot_node.id)
 
-        final_str += " LoadT " + str(self.total_load())
+        final_str += " ----- LoadL " + str(self.linehauls_load())
+        final_str += " ----- LoadB " + str(self.backhauls_load())
+        final_str += " ----- LoadT " + str(self.total_load())
 
         return final_str
 
