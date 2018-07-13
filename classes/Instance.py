@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 import math
-from Node import Node
-from Route import Route
+from classes.Node import Node
+from classes.Route import Route
 from utils.utils import *
 import random as rnd
 
@@ -155,7 +155,7 @@ class Instance(object):
 
         # Assuming that linehaul routes are greater that backhaul routes
         while len(backhauls_routes) > len(linehauls_routes):
-            print "creating one more linehaul route..."
+            print("creating one more linehaul route...")
 
             # cerco la prima rotta linehaul con almeno due nodi
             i = 0
@@ -182,7 +182,7 @@ class Instance(object):
         # If there are some remaining linehaul routes, main routes of only linehaul routes are created
         for i in range(len(backhauls_routes), len(linehauls_routes)):
             self.main_routes.append(
-                Route(self.depot_node, linehauls_routes[i])
+                Route(self.depot_node, linehauls_routes[i], [])
             )
 
         while len(self.main_routes) < self.n_vehicles:
@@ -205,14 +205,6 @@ class Instance(object):
             # for route in self.main_routes:
             #    print(route)
 
-    '''
-    def get_unified_routes(self):
-        routes = []
-        for route in self.main_routes:
-            routes.append([route.depot_node] + route.linehauls + route.backhauls + [route.depot_node])
-        return routes
-    '''
-
     def get_unified_routes(self):
         routes = []
         for route in self.main_routes:
@@ -226,30 +218,33 @@ class Instance(object):
         # di rispettare il vincolo di capacita'
 
         types = ["L", "B", "LL", "BB", "BL", "LB"]
-
         # Se la lunghezza di types e' 1 devo fare uno spostamento, altrimenti uno scambio
 
         for i in range(300):
-            # SCAMBI LEGALI
-            # Genero due indici random di due route esistenti tra quelle correnti
-            r1 = rnd.randint(0, len(self.main_routes) - 1)
-            r2 = rnd.randint(0, len(self.main_routes) - 1)
-            choose = rnd.randint(2, 5)
-            # print(choose)
+            choose = rnd.randint(0, 5)
 
-            exhange_type = types[choose]
+            if choose >= 2:
+                # SCAMBI LEGALI
+                # Genero due indici random di due route esistenti tra quelle correnti
+                r1 = rnd.randint(0, len(self.main_routes) - 1)
+                r2 = rnd.randint(0, len(self.main_routes) - 1)
+                #print(choose)
 
-            self.random_legal_exchange(r1, r2, exhange_type)
+                exchange_type = types[choose]
+                #print(exchange_type)
+                self.random_legal_exchange(r1, r2, exchange_type)
 
-            '''
-            # RIPOSIZIONAMENTI LEGALI SENZA SCAMBI, PROPRIO SPOSTAMENTI
+            else:
+                # RIPOSIZIONAMENTI LEGALI SENZA SCAMBI, PROPRIO SPOSTAMENTI
 
-            # Genero due indici random di due route esistenti tra quelle correnti
-            r1 = rnd.randint(0, len(self.main_routes) - 1)
-            r2 = rnd.randint(0, len(self.main_routes) - 1)
-            choose = rnd.randint(0, 1)
-            exhange_type = types[choose]
-            '''
+                # Genero due indici random di due route esistenti tra quelle correnti
+                r1 = rnd.randint(0, len(self.main_routes) - 1)
+                r2 = rnd.randint(0, len(self.main_routes) - 1)
+                #choose = rnd.randint(0, 1)
+                relocate_type = types[choose]
+                #print(relocate_type)
+
+                self.random_legal_relocate(r1, r2, relocate_type)
 
         '''
         # PERMUTAZIONE : DA SOLA NON BASTA! MI CONVIENE PRIMA FARE ALCUNI SCAMBI AMMISSIBILI RANDOM TRA LE ROTTE
@@ -280,8 +275,8 @@ class Instance(object):
                     # Genero un indice random di un linehaul
                     idx1 = rnd.randint(0, len(self.main_routes[r1].linehauls) - 1)
 
-                    if self.main_routes[r2].linehauls_load() + self.main_routes[r1].linehauls[idx1].load <= \
-                            self.vehicle_load:
+                    if (self.main_routes[r2].linehauls_load() + self.main_routes[r1].linehauls[idx1].load <=
+                            self.vehicle_load) and (len(self.main_routes[r1].linehauls) >= 2):
                         # posso spostare
                         # appendo
                         self.main_routes[r2].linehauls.append(self.main_routes[r1].linehauls[idx1])
@@ -303,11 +298,14 @@ class Instance(object):
                         # Genero un indice random di un linehaul
                         idx1 = rnd.randint(0, len(self.main_routes[r1].backhauls) - 1)
 
-                        if self.main_routes[r2].backhauls_load() + self.main_routes[r1].backhauls[idx1].load <= \
-                                self.vehicle_load:
+                        if (self.main_routes[r2].backhauls_load() + self.main_routes[r1].backhauls[idx1].load <= self.vehicle_load) and \
+                           (len(self.main_routes[r2].linehauls) >= 1):
                             # posso spostare
                             # appendo
-                            self.main_routes[r2].backhauls.append(self.main_routes[r1].backhauls[idx1])
+                            backhaul_da_spostare = self.main_routes[r1].backhauls[idx1]
+
+                            self.main_routes[r2].backhauls.append(backhaul_da_spostare)
+
                             # elimino dalla vecchia
                             self.main_routes[r1].backhauls.remove(self.main_routes[r1].backhauls[idx1])
 

@@ -1,4 +1,4 @@
-from Node import Node
+from classes.Node import Node
 
 
 class Route(object):

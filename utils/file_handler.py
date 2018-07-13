@@ -1,9 +1,7 @@
 import os
 
 from classes.Instance import *
-from utils import BACKHAUL_TYPE
-from utils import LINEHAUL_TYPE
-
+from utils import *
 
 def load_solution(filename):
     if os.path.isfile("data/Instances/" + filename):

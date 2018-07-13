@@ -110,8 +110,6 @@ def minimize_fo(instance):
 
     # Finding the bext exchange for each route's node
 
-    start = time.time()
-
     #n_exch = 0
 
     while is_objective_function_improving:
@@ -289,9 +287,4 @@ def minimize_fo(instance):
         gain = fo_ext - fo_curr
         # print(gain)
         is_objective_function_improving = gain > 0
-
-
-    # print(objective_function(instance.distance_matrix, instance.main_routes))
-    end = time.time() - start
-
 
