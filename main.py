@@ -6,8 +6,7 @@ from copy import deepcopy
 
 # Main module
 if __name__ == "__main__":
-
-    # file_name = "A1.txt"
+    #file_name = "B1.txt"
     file_name = "all"
 
     # se file_name e' "all", allora opera su tutte le istanze
@@ -99,7 +98,3 @@ if __name__ == "__main__":
     print "gaps:"
     print gaps
     print "\ngap medio: " + str(sum(gaps)/len(gaps))
-
-    '''
-
-'''

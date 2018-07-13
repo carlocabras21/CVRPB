@@ -36,6 +36,7 @@ class Instance(object):
     distance_matrix = np.array([[]])
     main_routes = []
 
+
     # current_routes = []
 
     def __init__(self):
@@ -203,6 +204,14 @@ class Instance(object):
             # print("Main routes")
             # for route in self.main_routes:
             #    print(route)
+
+    '''
+    def get_unified_routes(self):
+        routes = []
+        for route in self.main_routes:
+            routes.append([route.depot_node] + route.linehauls + route.backhauls + [route.depot_node])
+        return routes
+    '''
 
     def get_unified_routes(self):
         routes = []

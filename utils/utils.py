@@ -55,32 +55,6 @@ def objective_function(distance_matrix, routes):
     return fo
 
 
-def get_labels(route, node_idx):
-
-    # NODO INTERNO DI LINEHAUL: e' un linehaul e il successivo e' un linehaul oppure siamo in D L B D
-    if (route[node_idx].type == LINEHAUL_TYPE) and (route[node_idx + 1].type == LINEHAUL_TYPE or
-       (route[node_idx - 1].type == DEPOT_TYPE and route[node_idx + 1].type == BACKHAUL_TYPE) or
-       (route[node_idx - 1].type == DEPOT_TYPE and route[node_idx + 1].type == DEPOT_TYPE)):
-        return True, False, False, False
-
-    # NODO ESTERNO DI LINEHAUL: se e' un linehaul e il successivo e' un backhaul
-    if (route[node_idx].type == LINEHAUL_TYPE and route[node_idx + 1].type == BACKHAUL_TYPE) or \
-       (route[node_idx].type == LINEHAUL_TYPE and route[node_idx + 1].type == DEPOT_TYPE):
-        return  False, True, False, False
-
-    # NODO INTERNO DI BACKHAUL: se e' un backhaul e il precedente e' un backhaul
-    if route[node_idx].type == BACKHAUL_TYPE and route[node_idx - 1].type == BACKHAUL_TYPE:
-        return False, False, True, False
-
-    # NODO ESTERNO DI BACKHAUL: se e' un backhaul e il precedente e' un linehaul
-    if route[node_idx].type == BACKHAUL_TYPE and route[node_idx - 1].type == LINEHAUL_TYPE:
-        return False, False, False, True
-
-    print("error in labeling the node: " + str(route[node_idx]) + " in route:")
-    print(str(route))
-    exit(3)
-
-
 def compute_fo_exchange(distance_matrix, routes, i, m, j, n, fo_prec):
     sub = [0, 0, 0, 0]
     add = [0, 0, 0, 0]
@@ -137,7 +111,8 @@ def minimize_fo(instance):
     # Finding the bext exchange for each route's node
 
     start = time.time()
-    n_exch = 0
+
+    #n_exch = 0
 
     while is_objective_function_improving:
 
@@ -165,8 +140,8 @@ def minimize_fo(instance):
                 # Aggiorno la fo "da battere"
                 fo_prec = fo_curr
 
-                # labels
-                fst_line_int, fst_line_ext, fst_back_int, fst_back_ext = get_labels(routes[i], m)
+                # Tipo del primo nodo
+                type_node_m = routes[i][m].type
 
                 if routes[i][m].type == BACKHAUL_TYPE and routes[i][m - 1].type == DEPOT_TYPE:
                     print("WRONG ROUTE:")
@@ -176,94 +151,80 @@ def minimize_fo(instance):
                 for j in range(len(routes)):
                     for n in range(1, len(routes[j]) - 1):
 
-                        # labels
-
-                        snd_line_int, snd_line_ext, snd_back_int, snd_back_ext = get_labels(routes[j], n)
+                        # Tipo secondo nodo
+                        type_node_n = routes[j][n].type
 
                         # EXCHANGE TIME
 
                         fo_exchange = compute_fo_exchange(instance.distance_matrix, routes, i, m, j, n, fo_prec)
 
-                        # Controlliamo quale tipo di scambio dev'essere eseguito
-                        if not (i == j and m == n):
+                        if fo_exchange < fo_curr:
 
-                            # L <-> L
-                            if (fst_line_int and snd_line_int) or (fst_line_int and snd_line_ext) or (fst_line_ext and snd_line_int) or (fst_line_ext and snd_line_ext):
+                            # Controlliamo quale tipo di scambio dev'essere eseguito
+                            if not (i == j and m == n):
 
-                                # VERIFICA VINCOLO DI CAPACITA'
+                                # L <-> L
+                                if type_node_m == LINEHAUL_TYPE and type_node_n == LINEHAUL_TYPE:
 
-                                # Calcolo il carico delle route
-                                load_line_i = instance.main_routes[i].linehauls_load()
-                                load_line_j = instance.main_routes[j].linehauls_load()
+                                    # Controllo il vincolo di capacita'
+                                    if (instance.main_routes[i].linehauls_load() - routes[i][m].load + routes[j][n].load <= instance.vehicle_load) and \
+                                       (instance.main_routes[j].linehauls_load() - routes[j][n].load + routes[i][m].load <= instance.vehicle_load):
 
-                                if (load_line_i - routes[i][m].load + routes[j][n].load <= instance.vehicle_load) and \
-                                    (load_line_j - routes[j][n].load + routes[i][m].load <= instance.vehicle_load) and \
-                                    (fo_exchange < fo_curr):
+                                        fo_curr = fo_exchange
 
-                                    fo_curr = fo_exchange
+                                        exchange_indices = [i, m - 1, j, n-1]
+                                        exchange_type = "LL"
 
-                                    exchange_indices = [i, m - 1, j, n-1]
-                                    exchange_type = "LL"
 
-                            # B <-> B
-                            if (fst_back_int and snd_back_int) or (fst_back_int and snd_back_ext) or (fst_back_ext and snd_back_int) or (fst_back_ext and snd_back_ext):
-                                # VERIFICA VINCOLO DI CAPACITA'
+                                else:
+                                    # B <-> B
+                                    if type_node_m == BACKHAUL_TYPE and type_node_n == BACKHAUL_TYPE:
+                                        # Controllo il vincolo di capacita'
+                                        if (instance.main_routes[i].backhauls_load() - routes[i][m].load + routes[j][n].load <= instance.vehicle_load) and \
+                                           (instance.main_routes[j].backhauls_load() - routes[j][n].load + routes[i][m].load <= instance.vehicle_load):
 
-                                # Calcolo il carico delle route
-                                load_line_i = instance.main_routes[i].backhauls_load()
-                                load_line_j = instance.main_routes[j].backhauls_load()
+                                            fo_curr = fo_exchange
 
-                                if (load_line_i - routes[i][m].load + routes[j][n].load <= instance.vehicle_load) and \
-                                   (load_line_j - routes[j][n].load + routes[i][m].load <= instance.vehicle_load) and \
-                                   (fo_exchange < fo_curr):
+                                            # salviamo gli indici
+                                            exchange_indices = [i, m - (len(instance.main_routes[i].linehauls) + 1),
+                                                                j, n - (len(instance.main_routes[j].linehauls) + 1)]
+                                            exchange_type = "BB"
+                                    else:
+                                        # L <-> B
+                                        if type_node_m == LINEHAUL_TYPE and type_node_n == BACKHAUL_TYPE:
+                                            # Controlliamo che la lista della prima rotta (dove c'e' L) abbia almeno 2 L
+                                            # e L sia seguito da B o D e B sia preceduto da L, e siano su una diversa rotta
+                                            if i != j and len(instance.main_routes[i].linehauls) >= 2 and \
+                                                (routes[i][m + 1].type == BACKHAUL_TYPE or routes[i][m + 1].type == DEPOT_TYPE) and \
+                                                (routes[j][n -1].type == LINEHAUL_TYPE):
 
-                                    fo_curr = fo_exchange
+                                                # Verifica vincolo di capacita'
+                                                if (instance.main_routes[j].linehauls_load() + routes[j][n].load <= instance.vehicle_load) and \
+                                                   (instance.main_routes[i].backhauls_load() + routes[i][m].load <= instance.vehicle_load):
 
-                                    # salviamo gli indici
-                                    exchange_indices = [i, m - (len(instance.main_routes[i].linehauls) + 1),
-                                                        j, n - (len(instance.main_routes[j].linehauls) + 1)]
-                                    exchange_type = "BB"
+                                                    fo_curr = fo_exchange
 
-                            # L <-> B
-                            if (fst_line_ext and snd_back_ext and i != j):
-                                # VERIFICA VINCOLO DI CAPACITA'
+                                                    # salviamo gli indici
+                                                    exchange_indices = [i, m - 1, j,
+                                                                        n - (len(instance.main_routes[j].linehauls) + 1)]
+                                                    exchange_type = "LB"
+                                        else:
+                                            # B <-> L
+                                            # Controlliamo che la lista della seconda rotta (dove c'e' L) abbia almeno 2 L
+                                            # e L sia seguito da B o D e B sia preceduto da L, e siano su una diversa rotta
+                                            if i != j and len(instance.main_routes[j].linehauls) >= 2 and \
+                                                    (routes[j][n + 1].type == BACKHAUL_TYPE or routes[j][n + 1].type == DEPOT_TYPE) and \
+                                                    (routes[i][m - 1].type == LINEHAUL_TYPE):
 
-                                # Calcolo il carico delle route
-                                load_back_i = instance.main_routes[i].backhauls_load()
-                                load_line_j = instance.main_routes[j].linehauls_load()
+                                                # capacita'
+                                                if (instance.main_routes[j].backhauls_load() + routes[i][m].load <= instance.vehicle_load) and \
+                                                   (instance.main_routes[i].linehauls_load() + routes[j][n].load <= instance.vehicle_load):
+                                                    fo_curr = fo_exchange
 
-                                # Devo verificare che il backhaul di j ci stia nella lista dei backhaul di i e che il linehaul
-                                # di i ci stia nella lista dei linehaul di j
-
-                                if (load_back_i + routes[j][n].load <= instance.vehicle_load) and \
-                                   (load_line_j + routes[i][m].load <= instance.vehicle_load) and \
-                                   (fo_exchange < fo_curr):
-
-                                    fo_curr = fo_exchange
-
-                                    # salviamo gli indici
-                                    exchange_indices = [i, m - 1, j, n - (len(instance.main_routes[j].linehauls) + 1)]
-                                    exchange_type = "LB"
-
-                            # B <-> L
-                            if (fst_back_ext and snd_line_ext and i != j):
-                                # VERIFICA VINCOLO DI CAPACITA'
-
-                                # Calcolo il carico delle route
-                                load_line_i = instance.main_routes[i].linehauls_load()
-                                load_back_j = instance.main_routes[j].backhauls_load()
-
-                                if (load_back_j + routes[i][m].load <= instance.vehicle_load) and \
-                                   (load_line_i + routes[j][n].load <= instance.vehicle_load) and \
-                                   (fo_exchange < fo_curr):
-
-                                    fo_curr = fo_exchange
-
-                                    # salviamo gli indici
-                                    exchange_indices = [i, m - (len(instance.main_routes[i].linehauls) + 1), j, n-1]
-                                    exchange_type = "BL"
-
-                #print("")
+                                                    # salviamo gli indici
+                                                    exchange_indices = [i, m - (len(instance.main_routes[i].linehauls) + 1),
+                                                                        j, n - 1]
+                                                    exchange_type = "BL"
 
                 if exchange_type == "LL":
 
@@ -273,7 +234,7 @@ def minimize_fo(instance):
                         instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]]
 
                     instance.main_routes[exchange_indices[2]].linehauls[exchange_indices[3]] = supp_node
-                    n_exch += 1
+                    #n_exch += 1
 
                 if exchange_type == "BB":
 
@@ -283,7 +244,7 @@ def minimize_fo(instance):
                         instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]]
 
                     instance.main_routes[exchange_indices[2]].backhauls[exchange_indices[3]] = supp_node
-                    n_exch += 1
+                    #n_exch += 1
 
                 if exchange_type == "BL":
 
@@ -301,7 +262,7 @@ def minimize_fo(instance):
                     instance.main_routes[exchange_indices[0]].linehauls.append(last_line)
 
                     instance.main_routes[exchange_indices[2]].linehauls.remove(last_line)
-                    n_exch += 1
+                    #n_exch += 1
 
                 if exchange_type == "LB":
 
@@ -319,7 +280,7 @@ def minimize_fo(instance):
                         [first_back] + instance.main_routes[exchange_indices[0]].backhauls
 
                     instance.main_routes[exchange_indices[2]].backhauls.remove(first_back)
-                    n_exch += 1
+                    #n_exch += 1
 
                 #if int(fo_curr) != int(objective_function(instance.distance_matrix, instance.main_routes)):
                  #   print("ERRORE: fo: " + str(objective_function(instance.distance_matrix, instance.main_routes)))
