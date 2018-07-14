@@ -13,7 +13,7 @@ class Route(object):
     linehauls = []
     backhauls = []
 
-    def __init__(self, depot_node = Node(), linehauls = [], backhauls = []):
+    def __init__(self, depot_node=Node(), linehauls=[], backhauls=[]):
         self.depot_node = depot_node
         self.linehauls = linehauls
         self.backhauls = backhauls

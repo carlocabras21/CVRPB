@@ -4,7 +4,7 @@ from os import listdir
 
 # Main module
 if __name__ == "__main__":
-    #file_name = "L1.txt"
+    # file_name = "A1.txt"
     file_name = "all"
 
     # se file_name e' "all", allora opera su tutte le istanze

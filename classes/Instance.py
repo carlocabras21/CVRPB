@@ -36,9 +36,6 @@ class Instance(object):
     distance_matrix = np.array([[]])
     main_routes = []
 
-
-    # current_routes = []
-
     def __init__(self):
         self.n_customers = 0
         self.n_vehicles = 0
@@ -214,7 +211,8 @@ class Instance(object):
     # Tramite tale metodo partendo dalle current route le permuto in maniera casuale sia internamente che non
     def mix_routes_random(self):
 
-        # SCAMBI AMMISSIBILI : cioe' scambi a random che peggiorano/migliorano la fo, ma non ci interessa, basta che permettano
+        # SCAMBI AMMISSIBILI : cioe' scambi a random che peggiorano/migliorano la fo,
+        # ma non ci interessa, basta che permettano
         # di rispettare il vincolo di capacita'
 
         types = ["L", "B", "LL", "BB", "BL", "LB"]
@@ -228,10 +226,10 @@ class Instance(object):
                 # Genero due indici random di due route esistenti tra quelle correnti
                 r1 = rnd.randint(0, len(self.main_routes) - 1)
                 r2 = rnd.randint(0, len(self.main_routes) - 1)
-                #print(choose)
+                # print(choose)
 
                 exchange_type = types[choose]
-                #print(exchange_type)
+                # print(exchange_type)
                 self.random_legal_exchange(r1, r2, exchange_type)
 
             else:
@@ -240,9 +238,9 @@ class Instance(object):
                 # Genero due indici random di due route esistenti tra quelle correnti
                 r1 = rnd.randint(0, len(self.main_routes) - 1)
                 r2 = rnd.randint(0, len(self.main_routes) - 1)
-                #choose = rnd.randint(0, 1)
+                # choose = rnd.randint(0, 1)
                 relocate_type = types[choose]
-                #print(relocate_type)
+                # print(relocate_type)
 
                 self.random_legal_relocate(r1, r2, relocate_type)
 
@@ -298,8 +296,9 @@ class Instance(object):
                         # Genero un indice random di un linehaul
                         idx1 = rnd.randint(0, len(self.main_routes[r1].backhauls) - 1)
 
-                        if (self.main_routes[r2].backhauls_load() + self.main_routes[r1].backhauls[idx1].load <= self.vehicle_load) and \
-                           (len(self.main_routes[r2].linehauls) >= 1):
+                        if (self.main_routes[r2].backhauls_load() + self.main_routes[r1].backhauls[
+                            idx1].load <= self.vehicle_load) and \
+                                (len(self.main_routes[r2].linehauls) >= 1):
                             # posso spostare
                             # appendo
                             backhaul_da_spostare = self.main_routes[r1].backhauls[idx1]
@@ -362,9 +361,9 @@ class Instance(object):
 
                     # Controllo se lo scambio rispetta il vincolo di capacita'
                     if (self.main_routes[r1].backhauls_load() - self.main_routes[r1].backhauls[idx1].load +
-                             self.main_routes[r2].backhauls[idx2].load <= self.vehicle_load) and \
+                            self.main_routes[r2].backhauls[idx2].load <= self.vehicle_load) and \
                             (self.main_routes[r2].backhauls_load() - self.main_routes[r2].backhauls[idx2].load +
-                             self.main_routes[r1].backhauls[idx1].load <= self.vehicle_load):
+                                 self.main_routes[r1].backhauls[idx1].load <= self.vehicle_load):
                         # SCAMBIO
                         supp_node = self.main_routes[r1].backhauls[idx1]
                         self.main_routes[r1].backhauls[idx1] = self.main_routes[r2].backhauls[idx2]
@@ -456,3 +455,27 @@ class Instance(object):
                         exchange = True
 
                     attempts += 1
+
+    def check_constraints(self):
+        for route in self.main_routes:
+
+            # capacity
+            if route.linehauls_load() > self.vehicle_load or \
+                            route.backhauls_load() > self.vehicle_load:
+                print "capacity constraint violated"
+                exit(1)
+
+            # no routes with only backhauls
+            if not route.linehauls and route.backhauls:
+                print "no-routes-with-only-backhauls constraint violated"
+                exit(2)
+
+            # no nodes in wrong list
+            for node in route.backhauls:
+                if node.type == LINEHAUL_TYPE:
+                    print "no-linehaul-node-in-backhauls-list constraint violated"
+                    exit(3)
+            for node in route.linehauls:
+                if node.type == BACKHAUL_TYPE:
+                    print "no-backhaul-node-in-linehauls-list constraint violated"
+                    exit(4)

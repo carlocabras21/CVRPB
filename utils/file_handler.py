@@ -3,12 +3,13 @@ import os
 from classes.Instance import *
 from utils import *
 
+
 def load_solution(filename):
     if os.path.isfile("data/Instances/" + filename):
         fp = open("data/DetailedSols/RPA_Solutions/Detailed_Solution_" + filename)
 
         for line in fp.readlines():
-            #print(line.split())
+            # print(line.split())
             splitted = line.split()
             if len(splitted) == 4 and splitted[0] == 'Total' and splitted[1] == 'Cost':
                 return float(splitted[3])
