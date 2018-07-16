@@ -462,20 +462,20 @@ class Instance(object):
             # capacity
             if route.linehauls_load() > self.vehicle_load or \
                             route.backhauls_load() > self.vehicle_load:
-                print "capacity constraint violated"
+                print("capacity constraint violated")
                 exit(1)
 
             # no routes with only backhauls
             if not route.linehauls and route.backhauls:
-                print "no-routes-with-only-backhauls constraint violated"
+                print("no-routes-with-only-backhauls constraint violated")
                 exit(2)
 
             # no nodes in wrong list
             for node in route.backhauls:
                 if node.type == LINEHAUL_TYPE:
-                    print "no-linehaul-node-in-backhauls-list constraint violated"
+                    print("no-linehaul-node-in-backhauls-list constraint violated")
                     exit(3)
             for node in route.linehauls:
                 if node.type == BACKHAUL_TYPE:
-                    print "no-backhaul-node-in-linehauls-list constraint violated"
+                    print("no-backhaul-node-in-linehauls-list constraint violated")
                     exit(4)

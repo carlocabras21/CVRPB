@@ -1,0 +1,42 @@
+PROBLEM DETAILS
+Customers: 25
+Linehaul Customers: 20
+Backhaul Customers: 5
+Capacity: 4050
+
+LOCAL SEARCH WITH BEST EXCHANGE
+Total cost: 179672.705508
+Lower Bound: 155796.000000
+GAP: 0.153256
+
+TIMING
+Construction phase time: 0.014427
+Local search time: 1.328998
+Total time: 1.343425
+
+SOLUTION
+Routes: 3
+
+ROUTE: 0
+Cost: 87753.710386
+Delivery load: 3164.000000
+Pick-Up load: 1239.000000
+Customers in Route: 9
+Vertex sequence:
+0 24 20 22 19 23 6 7 4 3 0
+
+ROUTE: 1
+Cost: 54916.330402
+Delivery load: 3486.000000
+Pick-Up load: 0.000000
+Customers in Route: 7
+Vertex sequence:
+0 14 10 12 25 13 17 9 0
+
+ROUTE: 2
+Cost: 49679.939598
+Delivery load: 3399.000000
+Pick-Up load: 1301.000000
+Customers in Route: 9
+Vertex sequence:
+0 18 16 21 11 15 8 2 5 1 0

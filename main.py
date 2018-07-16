@@ -1,10 +1,13 @@
+import re
+
 from utils.file_handler import *
 from utils.utils import *
 from os import listdir
+import time
 
 # Main module
 if __name__ == "__main__":
-    # file_name = "A1.txt"
+    #file_name = "D1.txt"
     file_name = "all"
 
     # se file_name e' "all", allora opera su tutte le istanze
@@ -12,8 +15,7 @@ if __name__ == "__main__":
         instance_names = [f for f in listdir("data/Instances/")]
         instance_names.remove("info.txt")
         instance_names.sort()
-        #instance_names = instance_names[0:4] # fino a D4
-
+        #instance_names = instance_names[28:]
         #print(instance_names)
 
     # altrimenti opera solo su quella istanza
@@ -24,7 +26,14 @@ if __name__ == "__main__":
     threshold = 0.1
 
     for instance_name in instance_names:
+
+        if instance_name.startswith(('A', 'B', 'C', 'D', 'E', 'F', 'G')):
+            n_iter = 25
+        else:
+            n_iter = 60
+
         iter = 0
+
         start = time.time()
 
         # Loading instance
@@ -37,11 +46,12 @@ if __name__ == "__main__":
         # Creating distance matrix
         instance.compute_distance_matrix()
 
-        # instance.showData()
-        # instance.print_distance_matrix()
-
         # Creating main routes
         instance.create_main_routes()
+
+        end_cp = time.time() - start
+
+        print("\nConstruction phase time: %.2f" % end_cp)
 
         optimal_cost = load_solution(instance_name)
 
@@ -59,7 +69,9 @@ if __name__ == "__main__":
 
         best_routes = instance.main_routes
 
-        while iter <= 30:
+        start = time.time()
+
+        while iter <= n_iter:
             # Qua modifico curr routes che inizialmente e' formato dalle main routes
             instance.mix_routes_random()
 
@@ -77,6 +89,17 @@ if __name__ == "__main__":
             else:
                 iter += 1
 
+        end_ls = time.time() - start
+
+        print("\nLocal search time: %.2f" % end_ls)
+
+        print("\nTotal time: %.2f" % (end_cp + end_ls))
+
+        create_instance_solution(instance, instance_name[0:2], init_fo, min_fo, optimal_cost, end_cp, end_ls)
+
+
+        '''
+
         print("min_fo %f " % min_fo)
 
         print("\nLast.")
@@ -92,7 +115,10 @@ if __name__ == "__main__":
         print("Time %.4f\n" % end)
 
         gaps.append(gap)
+        '''
 
+    '''
     print("gaps:")
     print(gaps)
     print("\ngap medio: " + str(sum(gaps)/len(gaps)))
+    '''

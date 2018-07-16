@@ -74,3 +74,40 @@ def load_instance(filename):
             id_counter += 1
 
         return instance
+
+
+def create_instance_solution(instance, file_name, init_fo, min_fo, optimal_cost, end_cp, end_ls):
+    fp = open("data/Solutions/" + file_name + "_solution.txt", "w+")
+
+    fp.write("PROBLEM DETAILS")
+    fp.write("\nCustomers: %d\n" % instance.n_customers)
+    fp.write("Linehaul Customers: %d\n" % len(instance.linehaul_list))
+    fp.write("Backhaul Customers: %d\n" % len(instance.backhaul_list))
+    fp.write("Capacity: %d\n" % instance.vehicle_load)
+
+    fp.write("\nLOCAL SEARCH WITH BEST EXCHANGE")
+    fp.write("\nTotal cost: %f\n" % min_fo)
+    fp.write("Lower Bound: %f\n" % optimal_cost)
+    fp.write("GAP: %f\n" % ((min_fo - optimal_cost) / optimal_cost))
+
+    fp.write("\nTIMING")
+    fp.write("\nConstruction phase time: %f\n" % end_cp)
+    fp.write("Local search time: %f\n" % end_ls)
+    fp.write("Total time: %f\n" % (end_cp + end_ls))
+
+    fp.write("\nSOLUTION")
+    fp.write("\nRoutes: %d\n" % len(instance.main_routes))
+
+    id_route = 0
+    for route in instance.main_routes:
+        fp.write("\nROUTE: %d\n" % id_route)
+        fp.write("Cost: %f\n" % (cost(instance.distance_matrix, route)))
+        fp.write("Delivery load: %f\n" % route.linehauls_load())
+        fp.write("Pick-Up load: %f\n" % route.backhauls_load())
+        fp.write("Customers in Route: %d\n" % (len(route.linehauls) + len(route.backhauls)))
+
+        str_route = route.get_route_solution()
+        fp.write("Vertex sequence:\n")
+        fp.write(str_route + "\n")
+
+        id_route += 1

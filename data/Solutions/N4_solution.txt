@@ -1,0 +1,98 @@
+PROBLEM DETAILS
+Customers: 150
+Linehaul Customers: 100
+Backhaul Customers: 50
+Capacity: 6600
+
+LOCAL SEARCH WITH BEST EXCHANGE
+Total cost: 614356.022444
+Lower Bound: 394788.000000
+GAP: 0.556167
+
+TIMING
+Construction phase time: 0.441421
+Local search time: 91.456116
+Total time: 91.897537
+
+SOLUTION
+Routes: 10
+
+ROUTE: 0
+Cost: 78599.132219
+Delivery load: 5305.000000
+Pick-Up load: 4229.000000
+Customers in Route: 17
+Vertex sequence:
+0 82 116 147 146 58 99 126 143 145 30 5 22 34 4 17 28 31 0
+
+ROUTE: 1
+Cost: 111373.960878
+Delivery load: 6263.000000
+Pick-Up load: 4152.000000
+Customers in Route: 24
+Vertex sequence:
+0 55 90 68 85 136 97 117 149 93 98 128 127 110 53 45 29 16 1 14 23 44 12 24 32 0
+
+ROUTE: 2
+Cost: 95698.730009
+Delivery load: 4848.000000
+Pick-Up load: 3540.000000
+Customers in Route: 18
+Vertex sequence:
+0 78 123 114 56 65 91 100 79 150 20 50 13 18 37 9 21 40 46 0
+
+ROUTE: 3
+Cost: 49604.015376
+Delivery load: 6036.000000
+Pick-Up load: 1204.000000
+Customers in Route: 14
+Vertex sequence:
+0 59 83 62 105 124 84 140 120 113 144 64 36 47 10 0
+
+ROUTE: 4
+Cost: 30630.222062
+Delivery load: 5556.000000
+Pick-Up load: 434.000000
+Customers in Route: 10
+Vertex sequence:
+0 87 104 119 89 139 132 81 80 111 41 0
+
+ROUTE: 5
+Cost: 53535.283628
+Delivery load: 5076.000000
+Pick-Up load: 1420.000000
+Customers in Route: 10
+Vertex sequence:
+0 131 102 96 54 135 51 74 73 27 38 0
+
+ROUTE: 6
+Cost: 106488.334123
+Delivery load: 6208.000000
+Pick-Up load: 3868.000000
+Customers in Route: 20
+Vertex sequence:
+0 112 71 148 94 101 138 106 122 67 75 66 130 35 49 7 42 2 11 8 26 0
+
+ROUTE: 7
+Cost: 65947.477739
+Delivery load: 3553.000000
+Pick-Up load: 2735.000000
+Customers in Route: 10
+Vertex sequence:
+0 125 141 109 108 118 15 39 33 43 48 0
+
+ROUTE: 8
+Cost: 60826.147765
+Delivery load: 5703.000000
+Pick-Up load: 344.000000
+Customers in Route: 13
+Vertex sequence:
+0 57 86 88 137 52 60 107 76 142 70 63 129 3 0
+
+ROUTE: 9
+Cost: 69427.489269
+Delivery load: 5552.000000
+Pick-Up load: 913.000000
+Customers in Route: 14
+Vertex sequence:
+0 115 121 77 61 133 92 134 103 95 69 72 25 19 6 0

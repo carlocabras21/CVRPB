@@ -42,6 +42,20 @@ class Route(object):
 
         return final_str
 
+    def get_route_solution(self):
+        final_str = str(self.depot_node.id)
+
+        for l in self.linehauls:
+            final_str += " " + str(l.id)
+
+        for b in self.backhauls:
+            final_str += " " + str(b.id)
+
+        final_str += " " + str(self.depot_node.id)
+
+        return final_str
+
+
     def linehauls_load(self):
         load = 0
         for node in self.linehauls:
