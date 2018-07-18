@@ -115,4 +115,7 @@ if __name__ == "__main__":
     print("\nGAPS:")
     print(gaps)
     print("\nGAP Medio: " + str(sum(gaps) / len(gaps)))
+
+    print("\nTEMPI:")
+    print(times)
     print("\nTempo medio: " + str(sum(times) / len(times)))
