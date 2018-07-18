@@ -5,62 +5,62 @@ Backhaul Customers: 12
 Capacity: 5300
 
 LOCAL SEARCH WITH BEST EXCHANGE
-Total cost: 335180.158944
+Total cost: 297038.616598
 Lower Bound: 232521.000000
-GAP: 0.441505
+GAP: 0.277470
 
 TIMING
-Construction phase time: 0.070707
-Local search time: 2.354795
-Total time: 2.425502
+Construction phase time: 0.075162
+Local search time: 55.537628
+Total time: 55.612790
 
 SOLUTION
 Routes: 6
 
 ROUTE: 0
-Cost: 46164.909983
-Delivery load: 2799.000000
-Pick-Up load: 0.000000
-Customers in Route: 6
+Cost: 54817.913069
+Delivery load: 2134.000000
+Pick-Up load: 673.000000
+Customers in Route: 7
 Vertex sequence:
-0 39 23 46 51 26 40 0
+0 41 16 24 28 17 5 10 0
 
 ROUTE: 1
-Cost: 87412.344424
-Delivery load: 4594.000000
-Pick-Up load: 2092.000000
-Customers in Route: 13
+Cost: 61545.782512
+Delivery load: 4095.000000
+Pick-Up load: 1912.000000
+Customers in Route: 11
 Vertex sequence:
-0 34 47 49 50 44 20 13 15 11 6 5 10 4 0
+0 40 27 35 19 43 46 22 1 12 3 8 0
 
 ROUTE: 2
-Cost: 43062.381873
-Delivery load: 4642.000000
-Pick-Up load: 0.000000
-Customers in Route: 8
+Cost: 63788.641793
+Delivery load: 5152.000000
+Pick-Up load: 860.000000
+Customers in Route: 11
 Vertex sequence:
-0 21 55 31 41 52 18 25 56 0
+0 52 31 55 21 45 30 36 51 26 6 4 0
 
 ROUTE: 3
-Cost: 46963.596356
-Delivery load: 2404.000000
-Pick-Up load: 1810.000000
-Customers in Route: 9
-Vertex sequence:
-0 37 29 42 32 14 2 3 12 1 0
-
-ROUTE: 4
-Cost: 41400.348860
-Delivery load: 4591.000000
-Pick-Up load: 371.000000
+Cost: 52579.302242
+Delivery load: 3013.000000
+Pick-Up load: 1005.000000
 Customers in Route: 8
 Vertex sequence:
-0 43 19 35 33 38 22 48 7 0
+0 57 20 44 15 13 32 2 11 0
+
+ROUTE: 4
+Cost: 51068.832536
+Delivery load: 4483.000000
+Pick-Up load: 1153.000000
+Customers in Route: 11
+Vertex sequence:
+0 54 53 34 18 25 56 48 38 33 7 9 0
 
 ROUTE: 5
-Cost: 75588.907142
-Delivery load: 4803.000000
-Pick-Up load: 1330.000000
-Customers in Route: 13
+Cost: 54127.472659
+Delivery load: 4956.000000
+Pick-Up load: 0.000000
+Customers in Route: 9
 Vertex sequence:
-0 27 17 28 36 30 45 24 16 54 53 57 8 9 0
+0 37 42 39 23 29 14 50 49 47 0

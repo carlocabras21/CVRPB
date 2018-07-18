@@ -5,94 +5,94 @@ Backhaul Customers: 19
 Capacity: 4400
 
 LOCAL SEARCH WITH BEST EXCHANGE
-Total cost: 447124.097934
+Total cost: 462758.867772
 Lower Bound: 335006.000000
-GAP: 0.334675
+GAP: 0.381345
 
 TIMING
-Construction phase time: 0.187666
-Local search time: 43.636674
-Total time: 43.824340
+Construction phase time: 0.172762
+Local search time: 28.033742
+Total time: 28.206504
 
 SOLUTION
 Routes: 10
 
 ROUTE: 0
-Cost: 75133.203460
-Delivery load: 4078.000000
-Pick-Up load: 2577.000000
-Customers in Route: 14
+Cost: 31112.465522
+Delivery load: 4052.000000
+Pick-Up load: 0.000000
+Customers in Route: 7
 Vertex sequence:
-0 39 60 64 72 38 61 83 71 12 19 5 6 3 1 0
+0 23 84 90 63 70 80 24 0
 
 ROUTE: 1
-Cost: 43014.222374
-Delivery load: 4348.000000
+Cost: 43313.530932
+Delivery load: 3128.000000
 Pick-Up load: 0.000000
-Customers in Route: 9
+Customers in Route: 7
 Vertex sequence:
-0 93 79 89 82 33 68 27 48 32 0
+0 27 68 85 89 66 82 33 0
 
 ROUTE: 2
-Cost: 46952.118777
-Delivery load: 4005.000000
+Cost: 38184.826468
+Delivery load: 4256.000000
 Pick-Up load: 0.000000
-Customers in Route: 8
+Customers in Route: 7
 Vertex sequence:
-0 49 63 81 54 22 59 86 37 0
+0 20 76 60 39 51 79 94 0
 
 ROUTE: 3
-Cost: 34127.859321
-Delivery load: 4293.000000
-Pick-Up load: 715.000000
-Customers in Route: 7
-Vertex sequence:
-0 80 31 20 42 34 25 15 0
-
-ROUTE: 4
-Cost: 42844.873491
-Delivery load: 4162.000000
-Pick-Up load: 845.000000
-Customers in Route: 9
-Vertex sequence:
-0 65 28 70 84 77 78 40 2 16 0
-
-ROUTE: 5
-Cost: 35977.421198
-Delivery load: 4237.000000
+Cost: 32852.819660
+Delivery load: 4302.000000
 Pick-Up load: 0.000000
 Customers in Route: 8
 Vertex sequence:
-0 56 58 51 85 88 29 41 52 0
+0 61 38 64 72 34 42 43 29 0
+
+ROUTE: 4
+Cost: 135924.385854
+Delivery load: 4341.000000
+Pick-Up load: 4345.000000
+Customers in Route: 16
+Vertex sequence:
+0 86 54 22 57 75 91 67 18 9 11 10 1 12 17 7 8 0
+
+ROUTE: 5
+Cost: 62187.036715
+Delivery load: 4305.000000
+Pick-Up load: 2378.000000
+Customers in Route: 12
+Vertex sequence:
+0 65 71 92 83 47 53 35 44 4 13 14 16 0
 
 ROUTE: 6
-Cost: 77579.253116
-Delivery load: 4388.000000
-Pick-Up load: 2029.000000
-Customers in Route: 13
-Vertex sequence:
-0 45 76 43 73 21 50 26 74 69 11 10 8 18 0
-
-ROUTE: 7
-Cost: 70792.546416
-Delivery load: 2690.000000
-Pick-Up load: 2737.000000
+Cost: 53939.938965
+Delivery load: 4024.000000
+Pick-Up load: 1511.000000
 Customers in Route: 9
 Vertex sequence:
-0 23 55 57 75 4 13 7 9 17 0
+0 88 73 93 58 25 41 15 5 19 0
 
-ROUTE: 8
-Cost: 41279.911984
-Delivery load: 4249.000000
+ROUTE: 7
+Cost: 74146.863428
+Delivery load: 4382.000000
 Pick-Up load: 0.000000
-Customers in Route: 7
-Vertex sequence:
-0 47 92 87 30 46 90 24 0
-
-ROUTE: 9
-Cost: 42549.740468
-Delivery load: 4339.000000
-Pick-Up load: 623.000000
 Customers in Route: 10
 Vertex sequence:
-0 53 67 66 62 44 35 36 91 94 14 0
+0 45 69 48 32 21 55 36 62 74 56 0
+
+ROUTE: 8
+Cost: 22174.445646
+Delivery load: 3980.000000
+Pick-Up load: 0.000000
+Customers in Route: 8
+Vertex sequence:
+0 31 52 28 77 78 49 50 26 0
+
+ROUTE: 9
+Cost: 63026.690062
+Delivery load: 4019.000000
+Pick-Up load: 1292.000000
+Customers in Route: 10
+Vertex sequence:
+0 87 30 46 40 81 59 37 2 6 3 0

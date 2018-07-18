@@ -7,7 +7,7 @@ import time
 
 # Main module
 if __name__ == "__main__":
-    #file_name = "D1.txt"
+    #file_name = "A1.txt"
     file_name = "all"
 
     # se file_name e' "all", allora opera su tutte le istanze
@@ -15,7 +15,7 @@ if __name__ == "__main__":
         instance_names = [f for f in listdir("data/Instances/")]
         instance_names.remove("info.txt")
         instance_names.sort()
-        #instance_names = instance_names[28:]
+        #instance_names = instance_names[:]
         #print(instance_names)
 
     # altrimenti opera solo su quella istanza
@@ -23,14 +23,9 @@ if __name__ == "__main__":
         instance_names = [file_name]
 
     gaps = []
-    threshold = 0.1
+    times = []
 
     for instance_name in instance_names:
-
-        if instance_name.startswith(('A', 'B', 'C', 'D', 'E', 'F', 'G')):
-            n_iter = 25
-        else:
-            n_iter = 60
 
         iter = 0
 
@@ -39,6 +34,19 @@ if __name__ == "__main__":
         # Loading instance
         print("instance: " + instance_name)
         instance = load_instance(instance_name)
+
+        n_iter = 0
+
+        if instance_name.startswith(('A', 'B')):
+            n_iter = instance.n_customers * 20
+        elif instance_name.startswith(('C', 'D', 'E')):
+            n_iter = instance.n_customers * 15
+        elif instance_name.startswith(('F', 'G', 'H')):
+            n_iter = instance.n_customers * 10
+        elif instance_name.startswith(('I', 'J')):
+            n_iter = instance.n_customers * 8
+        elif instance_name.startswith(('K', 'L', 'M', 'N')):
+            n_iter = instance.n_customers * 5
 
         # Printing data
         # instance.showData()
@@ -72,6 +80,7 @@ if __name__ == "__main__":
         start = time.time()
 
         while iter <= n_iter:
+            #print(iter)
             # Qua modifico curr routes che inizialmente e' formato dalle main routes
             instance.mix_routes_random()
 
@@ -85,9 +94,8 @@ if __name__ == "__main__":
             if final_fo < min_fo:
                 min_fo = final_fo
                 best_routes = instance.main_routes
-                iter = 0
-            else:
-                iter += 1
+
+            iter += 1
 
         end_ls = time.time() - start
 
@@ -97,28 +105,14 @@ if __name__ == "__main__":
 
         create_instance_solution(instance, instance_name[0:2], init_fo, min_fo, optimal_cost, end_cp, end_ls)
 
-
-        '''
-
-        print("min_fo %f " % min_fo)
-
-        print("\nLast.")
-        instance.print_main_routes()
-
-        gain = (init_fo - min_fo) / init_fo * 100
-        print("Gain: %.2f " % gain + str("%\n"))
-
         gap = ((min_fo - optimal_cost) / optimal_cost) * 100
         print("**** GAP: %.2f " % gap + str("% ****\n"))
-
-        end = time.time() - start
-        print("Time %.4f\n" % end)
-
         gaps.append(gap)
-        '''
 
-    '''
-    print("gaps:")
+        times.append((end_cp + end_ls))
+        instance.print_main_routes()
+
+    print("\nGAPS:")
     print(gaps)
-    print("\ngap medio: " + str(sum(gaps)/len(gaps)))
-    '''
+    print("\nGAP Medio: " + str(sum(gaps) / len(gaps)))
+    print("\nTempo medio: " + str(sum(times) / len(times)))

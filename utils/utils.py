@@ -296,5 +296,4 @@ def minimize_fo(instance):
                 #   print("ERRORE: fo: " + str(objective_function(instance.distance_matrix, instance.main_routes)))
 
         gain = fo_ext - fo_curr
-        # print(gain)
         is_objective_function_improving = gain > 0

@@ -218,7 +218,7 @@ class Instance(object):
         types = ["L", "B", "LL", "BB", "BL", "LB"]
         # Se la lunghezza di types e' 1 devo fare uno spostamento, altrimenti uno scambio
 
-        for i in range(300):
+        for i in range(500):
             choose = rnd.randint(0, 5)
 
             if choose >= 2:
@@ -244,17 +244,17 @@ class Instance(object):
 
                 self.random_legal_relocate(r1, r2, relocate_type)
 
-        '''
+
         # PERMUTAZIONE : DA SOLA NON BASTA! MI CONVIENE PRIMA FARE ALCUNI SCAMBI AMMISSIBILI RANDOM TRA LE ROTTE
         # per ogni rotta
         for route in self.main_routes:
             # la permuto internamente nella sua parte linehaul e backhaul distintamente
             rnd.shuffle(route.linehauls)
             rnd.shuffle(route.backhauls)
-        '''
+
 
     def print_main_routes(self):
-        print("Main Routes")
+        print("Routes")
         for route in self.main_routes:
             print(route)
         print("\n")
