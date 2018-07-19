@@ -355,7 +355,11 @@ class Instance(object):
     def random_legal_exchange(self, r1, r2, exchange_type):
         """
         Computes an exchange between route r1 and route r2 of type exchange type,
-        within all the constraints
+        within all the constraints.
+
+        For a detailed explanation of how an exchange is performed, see the
+        "finale_exchange" and "minimize_fo" functions
+
         :param r1: the route from which we remove the node
         :param r2: the to which we add the node
         :param exchange_type: the type of the exchange
