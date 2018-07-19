@@ -1,7 +1,8 @@
-from utils.file_handler import *
-from utils.utils import *
-from os import listdir
 import time
+
+from os import listdir
+from utils.file_handler import load_instance, load_lower_bound, create_instance_solution
+from utils.utils import objective_function, minimize_fo
 
 # Main
 if __name__ == "__main__":
@@ -93,4 +94,4 @@ if __name__ == "__main__":
         print("\nGenerating Output File")
 
         # Generating the output file
-        create_instance_solution(instance, instance_name[0:2], min_objf, lower_bound, gap, end_cp, end_ls)
+        create_instance_solution(instance, instance_name[0:2], min_objf, lower_bound, (gap / 100), end_cp, end_ls)
