@@ -145,10 +145,12 @@ class Instance(object):
         linehauls_routes = self.create_routes(linehauls)  # Computing routes of linehauls only
         backhauls_routes = self.create_routes(backhauls)  # Computing routes of backhauls only
 
+        '''
         print("n of initial linehauls routes: " + str(len(linehauls_routes)))
         print("n of initial backhauls routes: " + str(len(backhauls_routes)))
         print("n of vehicles: " + str(self.n_vehicles))
         print("max load: " + str(self.vehicle_load))
+        '''
 
         # Assuming that linehaul routes are greater that backhaul routes
         while len(backhauls_routes) > len(linehauls_routes):

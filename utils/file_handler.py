@@ -4,7 +4,7 @@ from classes.Instance import *
 from utils import *
 
 
-def load_solution(filename):
+def load_lower_bound(filename):
     if os.path.isfile("data/Instances/" + filename):
         fp = open("data/DetailedSols/RPA_Solutions/Detailed_Solution_" + filename)
 
@@ -75,8 +75,7 @@ def load_instance(filename):
 
         return instance
 
-
-def create_instance_solution(instance, file_name, init_fo, min_fo, optimal_cost, end_cp, end_ls):
+def create_instance_solution(instance, file_name, min_fo, optimal_cost, gap, end_cp, end_ls):
     fp = open("data/Solutions/" + file_name + "_solution.txt", "w+")
 
     fp.write("PROBLEM DETAILS")
@@ -88,7 +87,7 @@ def create_instance_solution(instance, file_name, init_fo, min_fo, optimal_cost,
     fp.write("\nLOCAL SEARCH WITH BEST EXCHANGE")
     fp.write("\nTotal cost: %f\n" % min_fo)
     fp.write("Lower Bound: %f\n" % optimal_cost)
-    fp.write("GAP: %f\n" % ((min_fo - optimal_cost) / optimal_cost))
+    fp.write("GAP: %f\n" % gap)
 
     fp.write("\nTIMING")
     fp.write("\nConstruction phase time: %f\n" % end_cp)
