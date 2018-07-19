@@ -131,10 +131,10 @@ def create_instance_solution(instance, file_name, min_objf, optimal_cost, gap, e
 
     # Writing informations about final routes
     fp.write("\nSOLUTION")
-    fp.write("\nRoutes: %d\n" % len(instance.main_routes))
+    fp.write("\nRoutes: %d\n" % len(instance.curr_routes))
 
     id_route = 0
-    for route in instance.main_routes:
+    for route in instance.curr_routes:
 
         # Informations about every route
         fp.write("\nROUTE: %d\n" % id_route)

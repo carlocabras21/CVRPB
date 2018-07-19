@@ -1,10 +1,10 @@
-import numpy as np
 import sys
-import math
+
+import numpy as np
+import random as rnd
 from classes.Node import Node
 from classes.Route import Route
-from utils.utils import *
-import random as rnd
+from utils.utils import compute_distance, LINEHAUL_TYPE, BACKHAUL_TYPE
 
 
 class Instance(object):
@@ -21,22 +21,30 @@ class Instance(object):
     :param backhaul_list: A list of Node objects, the customers of Backhaul type
 
     :param distance_matrix: A numpy bi-dimensional array, the distance matrix for the distances between nodes
-    :param main_routes: A list of Route objects, the list of main routes to optimize
+    :param curr_routes: A list of Route objects, the list of current routes
 
     """
     n_customers = 0
     n_vehicles = 0
     vehicle_load = 0
 
-    depot_node = Node()  # in teoria dovrebbe farlo il costruttore
+    depot_node = Node()
 
     linehaul_list = []
     backhaul_list = []
 
     distance_matrix = np.array([[]])
-    main_routes = []
+    curr_routes = []
+
 
     def __init__(self):
+        """
+            Override of the __init__ method in order to instantiate a new Route Object with new values.
+
+            :param: depot_node: a Node object, represents the deposit node
+            :param linehauls: A list of Node objects, the linehaul nodes list
+            :param backhauls: A list of Node objects, the backhaul nodes list
+            """
         self.n_customers = 0
         self.n_vehicles = 0
         self.vehicle_load = 0
@@ -47,7 +55,7 @@ class Instance(object):
         self.backhaul_list = []
 
         self.distance_matrix = np.array([[]])
-        self.main_routes = []
+        self.curr_routes = []
 
     def show_data(self):
         """
@@ -174,39 +182,39 @@ class Instance(object):
 
         # Linking linehaul and backhaul routes in pairs, as long as there are backhaul routes
         for i in range(len(backhauls_routes)):
-            self.main_routes.append(
+            self.curr_routes.append(
                 Route(self.depot_node, linehauls_routes[i], backhauls_routes[i])
             )
 
         # If there are some remaining linehaul routes, main routes of only linehaul routes are created
         for i in range(len(backhauls_routes), len(linehauls_routes)):
-            self.main_routes.append(
+            self.curr_routes.append(
                 Route(self.depot_node, linehauls_routes[i], [])
             )
 
-        while len(self.main_routes) < self.n_vehicles:
+        while len(self.curr_routes) < self.n_vehicles:
             # Dobbiamo cercare una rotta che ha almeno 2 L e un B
             i = 0
-            while (len(self.main_routes[i].linehauls) < 2) or (len(self.main_routes[i].backhauls) < 1):
+            while (len(self.curr_routes[i].linehauls) < 2) or (len(self.curr_routes[i].backhauls) < 1):
                 i += 1
 
-            line_node = self.main_routes[i].linehauls[0]
-            back_node = self.main_routes[i].backhauls[0]
+            line_node = self.curr_routes[i].linehauls[0]
+            back_node = self.curr_routes[i].backhauls[0]
 
-            self.main_routes[i].linehauls.remove(line_node)
-            self.main_routes[i].backhauls.remove(back_node)
+            self.curr_routes[i].linehauls.remove(line_node)
+            self.curr_routes[i].backhauls.remove(back_node)
 
-            self.main_routes.append(
+            self.curr_routes.append(
                 Route(self.depot_node, [line_node], [back_node])
             )
 
             # print("Main routes")
-            # for route in self.main_routes:
+            # for route in self.curr_routes:
             #    print(route)
 
     def get_unified_routes(self):
         routes = []
-        for route in self.main_routes:
+        for route in self.curr_routes:
             routes.append([route.depot_node] + route.linehauls + route.backhauls + [route.depot_node])
         return routes
 
@@ -226,8 +234,8 @@ class Instance(object):
             if choose >= 2:
                 # SCAMBI LEGALI
                 # Genero due indici random di due route esistenti tra quelle correnti
-                r1 = rnd.randint(0, len(self.main_routes) - 1)
-                r2 = rnd.randint(0, len(self.main_routes) - 1)
+                r1 = rnd.randint(0, len(self.curr_routes) - 1)
+                r2 = rnd.randint(0, len(self.curr_routes) - 1)
                 # print(choose)
 
                 exchange_type = types[choose]
@@ -238,8 +246,8 @@ class Instance(object):
                 # RIPOSIZIONAMENTI LEGALI SENZA SCAMBI, PROPRIO SPOSTAMENTI
 
                 # Genero due indici random di due route esistenti tra quelle correnti
-                r1 = rnd.randint(0, len(self.main_routes) - 1)
-                r2 = rnd.randint(0, len(self.main_routes) - 1)
+                r1 = rnd.randint(0, len(self.curr_routes) - 1)
+                r2 = rnd.randint(0, len(self.curr_routes) - 1)
                 # choose = rnd.randint(0, 1)
                 relocate_type = types[choose]
                 # print(relocate_type)
@@ -249,15 +257,15 @@ class Instance(object):
 
         # PERMUTAZIONE : DA SOLA NON BASTA! MI CONVIENE PRIMA FARE ALCUNI SCAMBI AMMISSIBILI RANDOM TRA LE ROTTE
         # per ogni rotta
-        for route in self.main_routes:
+        for route in self.curr_routes:
             # la permuto internamente nella sua parte linehaul e backhaul distintamente
             rnd.shuffle(route.linehauls)
             rnd.shuffle(route.backhauls)
 
 
-    def print_main_routes(self):
+    def print_curr_routes(self):
         print("Routes")
-        for route in self.main_routes:
+        for route in self.curr_routes:
             print(route)
         print("\n")
 
@@ -271,17 +279,17 @@ class Instance(object):
                 attempts = 1  # tentativi di scambio
 
                 # Finche' non effettuo uno scambio o finche' non finisco i possibili tentativi
-                while not relocate and (attempts <= (len(self.main_routes[r1].linehauls))):
+                while not relocate and (attempts <= (len(self.curr_routes[r1].linehauls))):
                     # Genero un indice random di un linehaul
-                    idx1 = rnd.randint(0, len(self.main_routes[r1].linehauls) - 1)
+                    idx1 = rnd.randint(0, len(self.curr_routes[r1].linehauls) - 1)
 
-                    if (self.main_routes[r2].linehauls_load() + self.main_routes[r1].linehauls[idx1].load <=
-                            self.vehicle_load) and (len(self.main_routes[r1].linehauls) >= 2):
+                    if (self.curr_routes[r2].linehauls_load() + self.curr_routes[r1].linehauls[idx1].load <=
+                            self.vehicle_load) and (len(self.curr_routes[r1].linehauls) >= 2):
                         # posso spostare
                         # appendo
-                        self.main_routes[r2].linehauls.append(self.main_routes[r1].linehauls[idx1])
+                        self.curr_routes[r2].linehauls.append(self.curr_routes[r1].linehauls[idx1])
                         # elimino dalla vecchia
-                        self.main_routes[r1].linehauls.remove(self.main_routes[r1].linehauls[idx1])
+                        self.curr_routes[r1].linehauls.remove(self.curr_routes[r1].linehauls[idx1])
 
                         relocate = True
 
@@ -292,23 +300,23 @@ class Instance(object):
                 relocate = False  # False se non ho scambiato, True se effettuo uno scambio
                 attempts = 1  # tentativi di scambio
 
-                if len(self.main_routes[r1].backhauls) >= 1:
+                if len(self.curr_routes[r1].backhauls) >= 1:
                     # Finche' non effettuo uno scambio o finche' non finisco i possibili tentativi
-                    while not relocate and (attempts <= (len(self.main_routes[r1].backhauls))):
+                    while not relocate and (attempts <= (len(self.curr_routes[r1].backhauls))):
                         # Genero un indice random di un linehaul
-                        idx1 = rnd.randint(0, len(self.main_routes[r1].backhauls) - 1)
+                        idx1 = rnd.randint(0, len(self.curr_routes[r1].backhauls) - 1)
 
-                        if (self.main_routes[r2].backhauls_load() + self.main_routes[r1].backhauls[
+                        if (self.curr_routes[r2].backhauls_load() + self.curr_routes[r1].backhauls[
                             idx1].load <= self.vehicle_load) and \
-                                (len(self.main_routes[r2].linehauls) >= 1):
+                                (len(self.curr_routes[r2].linehauls) >= 1):
                             # posso spostare
                             # appendo
-                            backhaul_da_spostare = self.main_routes[r1].backhauls[idx1]
+                            backhaul_da_spostare = self.curr_routes[r1].backhauls[idx1]
 
-                            self.main_routes[r2].backhauls.append(backhaul_da_spostare)
+                            self.curr_routes[r2].backhauls.append(backhaul_da_spostare)
 
                             # elimino dalla vecchia
-                            self.main_routes[r1].backhauls.remove(self.main_routes[r1].backhauls[idx1])
+                            self.curr_routes[r1].backhauls.remove(self.curr_routes[r1].backhauls[idx1])
 
                             relocate = True
 
@@ -323,24 +331,24 @@ class Instance(object):
 
             # Finche' non effettuo uno scambio o finche' non finisco i possibili tentativi
             while not exchange and (
-                        attempts <= (len(self.main_routes[r1].linehauls)) * (len(self.main_routes[r2].linehauls))):
+                        attempts <= (len(self.curr_routes[r1].linehauls)) * (len(self.curr_routes[r2].linehauls))):
 
                 # Genero due indici random di due linehaul
-                idx1 = rnd.randint(0, len(self.main_routes[r1].linehauls) - 1)
-                idx2 = rnd.randint(0, len(self.main_routes[r2].linehauls) - 1)
+                idx1 = rnd.randint(0, len(self.curr_routes[r1].linehauls) - 1)
+                idx2 = rnd.randint(0, len(self.curr_routes[r2].linehauls) - 1)
 
                 # In caso di stessa rotta evito che tenti di scambiare il nodo con se stesso
-                if not (idx1 == idx2 and self.main_routes[r1] == self.main_routes[r2]):
+                if not (idx1 == idx2 and self.curr_routes[r1] == self.curr_routes[r2]):
 
                     # Controllo se lo scambio rispetta il vincolo di capacita'
-                    if (self.main_routes[r1].linehauls_load() - self.main_routes[r1].linehauls[idx1].load +
-                            self.main_routes[r2].linehauls[idx2].load <= self.vehicle_load) and \
-                            (self.main_routes[r2].linehauls_load() - self.main_routes[r2].linehauls[idx2].load +
-                                 self.main_routes[r1].linehauls[idx1].load <= self.vehicle_load):
+                    if (self.curr_routes[r1].linehauls_load() - self.curr_routes[r1].linehauls[idx1].load +
+                            self.curr_routes[r2].linehauls[idx2].load <= self.vehicle_load) and \
+                            (self.curr_routes[r2].linehauls_load() - self.curr_routes[r2].linehauls[idx2].load +
+                                 self.curr_routes[r1].linehauls[idx1].load <= self.vehicle_load):
                         # SCAMBIO
-                        supp_node = self.main_routes[r1].linehauls[idx1]
-                        self.main_routes[r1].linehauls[idx1] = self.main_routes[r2].linehauls[idx2]
-                        self.main_routes[r2].linehauls[idx2] = supp_node
+                        supp_node = self.curr_routes[r1].linehauls[idx1]
+                        self.curr_routes[r1].linehauls[idx1] = self.curr_routes[r2].linehauls[idx2]
+                        self.curr_routes[r2].linehauls[idx2] = supp_node
                         exchange = True
 
                 attempts += 1
@@ -352,24 +360,24 @@ class Instance(object):
 
             # Finche' non effettuo uno scambio o finche' non finisco i possibili tentativi
             while not exchange and (
-                        attempts <= (len(self.main_routes[r1].backhauls)) * (len(self.main_routes[r2].backhauls))):
+                        attempts <= (len(self.curr_routes[r1].backhauls)) * (len(self.curr_routes[r2].backhauls))):
 
                 # Genero due indici random di due linehaul
-                idx1 = rnd.randint(0, len(self.main_routes[r1].backhauls) - 1)
-                idx2 = rnd.randint(0, len(self.main_routes[r2].backhauls) - 1)
+                idx1 = rnd.randint(0, len(self.curr_routes[r1].backhauls) - 1)
+                idx2 = rnd.randint(0, len(self.curr_routes[r2].backhauls) - 1)
 
                 # In caso di stessa rotta evito che tenti di scambiare il nodo con se stesso
-                if not (idx1 == idx2 and self.main_routes[r1] == self.main_routes[r2]):
+                if not (idx1 == idx2 and self.curr_routes[r1] == self.curr_routes[r2]):
 
                     # Controllo se lo scambio rispetta il vincolo di capacita'
-                    if (self.main_routes[r1].backhauls_load() - self.main_routes[r1].backhauls[idx1].load +
-                            self.main_routes[r2].backhauls[idx2].load <= self.vehicle_load) and \
-                            (self.main_routes[r2].backhauls_load() - self.main_routes[r2].backhauls[idx2].load +
-                                 self.main_routes[r1].backhauls[idx1].load <= self.vehicle_load):
+                    if (self.curr_routes[r1].backhauls_load() - self.curr_routes[r1].backhauls[idx1].load +
+                            self.curr_routes[r2].backhauls[idx2].load <= self.vehicle_load) and \
+                            (self.curr_routes[r2].backhauls_load() - self.curr_routes[r2].backhauls[idx2].load +
+                                 self.curr_routes[r1].backhauls[idx1].load <= self.vehicle_load):
                         # SCAMBIO
-                        supp_node = self.main_routes[r1].backhauls[idx1]
-                        self.main_routes[r1].backhauls[idx1] = self.main_routes[r2].backhauls[idx2]
-                        self.main_routes[r2].backhauls[idx2] = supp_node
+                        supp_node = self.curr_routes[r1].backhauls[idx1]
+                        self.curr_routes[r1].backhauls[idx1] = self.curr_routes[r2].backhauls[idx2]
+                        self.curr_routes[r2].backhauls[idx2] = supp_node
                         exchange = True
 
                 attempts += 1
@@ -379,38 +387,38 @@ class Instance(object):
             exchange = False  # False se non ho scambiato, True se effettuo uno scambio
             attempts = 1  # tentativi di scambio
 
-            if len(self.main_routes[r1].backhauls) >= 1:
+            if len(self.curr_routes[r1].backhauls) >= 1:
                 # Finche' non effettuo uno scambio o finche' non finisco i possibili tentativi
                 while not exchange and (
-                            attempts <= (len(self.main_routes[r1].backhauls)) * (len(self.main_routes[r2].linehauls))):
+                            attempts <= (len(self.curr_routes[r1].backhauls)) * (len(self.curr_routes[r2].linehauls))):
                     # Genero due indici random
-                    idx1 = rnd.randint(0, len(self.main_routes[r1].backhauls) - 1)
-                    idx2 = rnd.randint(0, len(self.main_routes[r2].linehauls) - 1)
+                    idx1 = rnd.randint(0, len(self.curr_routes[r1].backhauls) - 1)
+                    idx2 = rnd.randint(0, len(self.curr_routes[r2].linehauls) - 1)
 
                     # Controllo se lo scambio rispetta il vincolo di capacita'
-                    if (self.main_routes[r1].linehauls_load() + self.main_routes[r2].linehauls[
+                    if (self.curr_routes[r1].linehauls_load() + self.curr_routes[r2].linehauls[
                         idx2].load <= self.vehicle_load) and \
-                            (self.main_routes[r2].backhauls_load() + self.main_routes[r1].backhauls[
+                            (self.curr_routes[r2].backhauls_load() + self.curr_routes[r1].backhauls[
                                 idx1].load <= self.vehicle_load) and \
-                            (len(self.main_routes[r2].linehauls) >= 2):
+                            (len(self.curr_routes[r2].linehauls) >= 2):
                         # SCAMBIO
                         # prendo il backhaul
-                        supp_node = self.main_routes[r1].backhauls[idx1]
+                        supp_node = self.curr_routes[r1].backhauls[idx1]
 
                         # lo metto in testa alla lista dei backhaul della route 2
-                        self.main_routes[r2].backhauls = [supp_node] + self.main_routes[r2].backhauls
+                        self.curr_routes[r2].backhauls = [supp_node] + self.curr_routes[r2].backhauls
 
                         # elimino il backhaul dalla route 1
-                        self.main_routes[r1].backhauls.remove(supp_node)
+                        self.curr_routes[r1].backhauls.remove(supp_node)
 
                         # prendo il linehaul
-                        supp_node = self.main_routes[r2].linehauls[idx2]
+                        supp_node = self.curr_routes[r2].linehauls[idx2]
 
                         # lo metto in coda alla lista dei linehaul della route 1
-                        self.main_routes[r1].linehauls.append(supp_node)
+                        self.curr_routes[r1].linehauls.append(supp_node)
 
                         # elimino il linehaul dalla route 2
-                        self.main_routes[r2].linehauls.remove(supp_node)
+                        self.curr_routes[r2].linehauls.remove(supp_node)
 
                         exchange = True
 
@@ -421,45 +429,45 @@ class Instance(object):
             exchange = False  # False se non ho scambiato, True se effettuo uno scambio
             attempts = 1  # tentativi di scambio
 
-            if len(self.main_routes[r2].backhauls) >= 1:
+            if len(self.curr_routes[r2].backhauls) >= 1:
                 # Finche' non effettuo uno scambio o finche' non finisco i possibili tentativi
                 while not exchange and (
-                            attempts <= (len(self.main_routes[r1].linehauls)) * (len(self.main_routes[r2].backhauls))):
+                            attempts <= (len(self.curr_routes[r1].linehauls)) * (len(self.curr_routes[r2].backhauls))):
                     # Genero due indici random
-                    idx1 = rnd.randint(0, len(self.main_routes[r1].linehauls) - 1)
-                    idx2 = rnd.randint(0, len(self.main_routes[r2].backhauls) - 1)
+                    idx1 = rnd.randint(0, len(self.curr_routes[r1].linehauls) - 1)
+                    idx2 = rnd.randint(0, len(self.curr_routes[r2].backhauls) - 1)
 
                     # Controllo se lo scambio rispetta il vincolo di capacita'
-                    if (self.main_routes[r1].backhauls_load() + self.main_routes[r2].backhauls[
+                    if (self.curr_routes[r1].backhauls_load() + self.curr_routes[r2].backhauls[
                         idx2].load <= self.vehicle_load) and \
-                            (self.main_routes[r2].linehauls_load() + self.main_routes[r1].linehauls[
+                            (self.curr_routes[r2].linehauls_load() + self.curr_routes[r1].linehauls[
                                 idx1].load <= self.vehicle_load) and \
-                            (len(self.main_routes[r1].linehauls) >= 2):
+                            (len(self.curr_routes[r1].linehauls) >= 2):
                         # SCAMBIO
                         # prendo il linehaul
-                        supp_node = self.main_routes[r1].linehauls[idx1]
+                        supp_node = self.curr_routes[r1].linehauls[idx1]
 
                         # lo metto in coda alla lista dei linehauls della route 2
-                        self.main_routes[r2].linehauls.append(supp_node)
+                        self.curr_routes[r2].linehauls.append(supp_node)
 
                         # elimino il linehauls dalla route 1
-                        self.main_routes[r1].linehauls.remove(supp_node)
+                        self.curr_routes[r1].linehauls.remove(supp_node)
 
                         # prendo il backhaul
-                        supp_node = self.main_routes[r2].backhauls[idx2]
+                        supp_node = self.curr_routes[r2].backhauls[idx2]
 
                         # lo metto in testa alla lista dei backhauls della route 1
-                        self.main_routes[r1].backhauls = [supp_node] + self.main_routes[r1].backhauls
+                        self.curr_routes[r1].backhauls = [supp_node] + self.curr_routes[r1].backhauls
 
                         # elimino il backhauls dalla route 2
-                        self.main_routes[r2].backhauls.remove(supp_node)
+                        self.curr_routes[r2].backhauls.remove(supp_node)
 
                         exchange = True
 
                     attempts += 1
 
     def check_constraints(self):
-        for route in self.main_routes:
+        for route in self.curr_routes:
 
             # capacity
             if route.linehauls_load() > self.vehicle_load or \

@@ -6,7 +6,7 @@ from utils.utils import objective_function, minimize_fo
 
 # Main
 if __name__ == "__main__":
-    file_name = "A1.txt"
+    file_name = "A2.txt"
     #file_name = "all"
 
     # check
@@ -56,13 +56,13 @@ if __name__ == "__main__":
         lower_bound = load_lower_bound(instance_name)
 
         # Computing the initial objective function
-        init_objf = objective_function(instance.distance_matrix, instance.main_routes)
+        init_objf = objective_function(instance.distance_matrix, instance.curr_routes)
 
         # Setting the current minimum objective function
         min_objf = init_objf
 
         # Setting the current best routes
-        best_routes = instance.main_routes
+        best_routes = instance.curr_routes
 
         start = time.time()
 
@@ -76,12 +76,12 @@ if __name__ == "__main__":
             minimize_fo(instance)
 
             # Computing the objective function of mixed routes
-            mix_objf = objective_function(instance.distance_matrix, instance.main_routes)
+            mix_objf = objective_function(instance.distance_matrix, instance.curr_routes)
 
             # checking if it is improving
             if mix_objf < min_objf:
                 min_objf = mix_objf
-                best_routes = instance.main_routes
+                best_routes = instance.curr_routes
 
         end_ls = time.time() - start
 
