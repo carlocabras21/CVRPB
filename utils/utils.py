@@ -292,8 +292,5 @@ def minimize_fo(instance):
 
                 instance.check_constraints()
 
-                # if int(fo_curr) != int(objective_function(instance.distance_matrix, instance.curr_routes)):
-                #   print("ERRORE: fo: " + str(objective_function(instance.distance_matrix, instance.curr_routes)))
-
         gain = fo_ext - fo_curr
         is_objective_function_improving = gain > 0

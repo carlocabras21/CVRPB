@@ -2,7 +2,7 @@ import os
 
 from classes.Instance import Instance
 from classes.Node import Node
-from utils.utils import BACKHAUL_TYPE, LINEHAUL_TYPE, cost
+from utils import BACKHAUL_TYPE, LINEHAUL_TYPE, cost
 
 
 def load_lower_bound(file_name):
