@@ -36,7 +36,6 @@ class Instance(object):
     distance_matrix = np.array([[]])
     curr_routes = []
 
-
     def __init__(self):
         """
             Override of the __init__ method in order to instantiate a new Route Object with new values.
@@ -160,27 +159,28 @@ class Instance(object):
         print("max load: " + str(self.vehicle_load))
         '''
 
-        # Assuming that linehaul routes are greater that backhaul routes
+        # if we have more backhauls routes then linehaul routes, we create one more linehaul route
+        # by removing a node from the first route that has at least two linehaul nodes
         while len(backhauls_routes) > len(linehauls_routes):
             print("creating one more linehaul route...")
 
-            # cerco la prima rotta linehaul con almeno due nodi
+            # finds first route with at least 2 linehaul nodes
             i = 0
             while len(linehauls_routes[i]) <= 1:
                 i += 1
 
-            # In posizione i c'e' una rotta con almeno due nodi linehaul
+            # ... and it's in position i
 
-            # prendo il primo nodo
+            # takes the first node of the ith route and creates a list with only that node
             node = linehauls_routes[i][0]
 
-            # lo rimuovo dalla lista corrente in cui sta
+            # removes the node from its current list
             linehauls_routes[i].remove(node)
 
-            # creo una nuova lista con quel nodo
+            # creates the list
             linehauls_routes.append([node])
 
-        # Linking linehaul and backhaul routes in pairs, as long as there are backhaul routes
+            # Linking linehaul and backhaul routes in pairs, as long as there are backhaul routes
         for i in range(len(backhauls_routes)):
             self.curr_routes.append(
                 Route(self.depot_node, linehauls_routes[i], backhauls_routes[i])
@@ -192,11 +192,16 @@ class Instance(object):
                 Route(self.depot_node, linehauls_routes[i], [])
             )
 
+        # if we have less routes than customers, we create routes until they are the same number
+        # (with this method we can get more combination in the mixing phase)
+        # the approach used is the same as the precedent creation-of-linehaul-route step
         while len(self.curr_routes) < self.n_vehicles:
-            # Dobbiamo cercare una rotta che ha almeno 2 L e un B
+            # finds a route with at least two linehauls and two backhauls
             i = 0
             while (len(self.curr_routes[i].linehauls) < 2) or (len(self.curr_routes[i].backhauls) < 1):
                 i += 1
+
+            # removes their first L/B node and creates the list
 
             line_node = self.curr_routes[i].linehauls[0]
             back_node = self.curr_routes[i].backhauls[0]
@@ -208,66 +213,72 @@ class Instance(object):
                 Route(self.depot_node, [line_node], [back_node])
             )
 
-            # print("Main routes")
-            # for route in self.curr_routes:
-            #    print(route)
-
     def get_unified_routes(self):
+        '''
+        Concatenates the depot, the linehauls, the backhauls and finally again the depot
+        in a single list.
+        It's used in the exchange phase, when we need the routes in a single list,
+        not separating linehauls from backhauls from the depot.
+
+        :return: a list of routes, i.e. a list of list of Nodes
+        '''
         routes = []
         for route in self.curr_routes:
             routes.append([route.depot_node] + route.linehauls + route.backhauls + [route.depot_node])
         return routes
 
-    # Tramite tale metodo partendo dalle current route le permuto in maniera casuale sia internamente che non
+    # Tramite tale metodo partendo dalle current route le permuto in maniera casuale
+    # sia internamente che non
     def mix_routes_random(self):
+        '''
+        Mixes the routes by performing feasible exchange: we move a node from a route
+        to another (and viceversa for the other node) if after the exchange all the
+        constraints are respected.
+        '''
 
-        # SCAMBI AMMISSIBILI : cioe' scambi a random che peggiorano/migliorano la fo,
-        # ma non ci interessa, basta che permettano
-        # di rispettare il vincolo di capacita'
-
+        # excchange type:
+        #   L/B: move a node from a route to another, without exchange with other nodes
+        #        (i.e. a relocate move)
+        #   LL (BB): exchange between linehauls (bakchauls) nodes
+        #   BL (LB): exchange between a backhaul (linehaul) with a linehaul (backhaul),
+        #            only if it's legal
         types = ["L", "B", "LL", "BB", "BL", "LB"]
-        # Se la lunghezza di types e' 1 devo fare uno spostamento, altrimenti uno scambio
 
         for i in range(500):
+            # selects the exchange type randomly
             choose = rnd.randint(0, 5)
 
             if choose >= 2:
-                # SCAMBI LEGALI
-                # Genero due indici random di due route esistenti tra quelle correnti
+                # we have to do an exchange between two nodes
+
+                # generates two random indices for the routes
                 r1 = rnd.randint(0, len(self.curr_routes) - 1)
                 r2 = rnd.randint(0, len(self.curr_routes) - 1)
-                # print(choose)
 
+                # recover the exchange type
                 exchange_type = types[choose]
-                # print(exchange_type)
+
+                # do the exchange between r1 and r2
                 self.random_legal_exchange(r1, r2, exchange_type)
 
             else:
-                # RIPOSIZIONAMENTI LEGALI SENZA SCAMBI, PROPRIO SPOSTAMENTI
+                # we have to move a node
 
-                # Genero due indici random di due route esistenti tra quelle correnti
+                # generates two random indices for the routes
                 r1 = rnd.randint(0, len(self.curr_routes) - 1)
                 r2 = rnd.randint(0, len(self.curr_routes) - 1)
-                # choose = rnd.randint(0, 1)
-                relocate_type = types[choose]
-                # print(relocate_type)
 
+                # recover the relocate type
+                relocate_type = types[choose]
+
+                # do the relocate between r1 and r2
                 self.random_legal_relocate(r1, r2, relocate_type)
 
-
-        # PERMUTAZIONE : DA SOLA NON BASTA! MI CONVIENE PRIMA FARE ALCUNI SCAMBI AMMISSIBILI RANDOM TRA LE ROTTE
-        # per ogni rotta
+        # random permutation inside the linehauls or backhauls of a route,
+        # no constraints violated
         for route in self.curr_routes:
-            # la permuto internamente nella sua parte linehaul e backhaul distintamente
             rnd.shuffle(route.linehauls)
             rnd.shuffle(route.backhauls)
-
-
-    def print_curr_routes(self):
-        print("Routes")
-        for route in self.curr_routes:
-            print(route)
-        print("\n")
 
     def random_legal_relocate(self, r1, r2, relocate_type):
 
