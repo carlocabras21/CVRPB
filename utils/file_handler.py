@@ -30,11 +30,11 @@ def load_lower_bound(file_name):
 
 def load_instance(file_name):
     """
-    This method reads an instance file and creates an Instance object, populating it with all the necessary information.
+        This method reads an instance file and creates an Instance object, populating it with all the necessary information.
 
-    :param file_name: a string, the name of the instance file
-    :return: instance, an Istance object representing a CVRPB instance
-    """
+        :param file_name: a string, the name of the instance file
+        :return: instance, an Istance object representing a CVRPB instance
+        """
     # Check if instance file exists
     if os.path.isfile("data/Instances/" + file_name):
         fp = open("data/Instances/" + file_name)
@@ -96,16 +96,16 @@ def load_instance(file_name):
 
 def create_instance_solution(instance, file_name, min_objf, optimal_cost, gap, end_cp, end_ls):
     """
-    This method creates an output file for an instance
+        This method creates an output file for an instance
 
-    :param instance:  an Istance object representing a CVRPB instance
-    :param file_name: a string, the name of the instance file
-    :param min_objf: a float, the value of minimum objective function
-    :param optimal_cost: a float, the value of optimal objective function (lower bound)
-    :param gap: a float, the gap between the optimal and minimized objective function
-    :param end_cp: a float, time for the creation of the main routes
-    :param end_ls: a float, time to perform the local search
-    """
+        :param instance:  an Istance object representing a CVRPB instance
+        :param file_name: a string, the name of the instance file
+        :param min_objf: a float, the value of minimum objective function
+        :param optimal_cost: a float, the value of optimal objective function (lower bound)
+        :param gap: a float, the gap between the optimal and minimized objective function
+        :param end_cp: a float, time for the creation of the main routes
+        :param end_ls: a float, time to perform the local search
+        """
 
     # Creating new file (overwrite if it exists)
     fp = open("data/Solutions/" + file_name + "_solution.txt", "w+")
