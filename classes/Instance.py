@@ -36,7 +36,6 @@ class Instance(object):
     distance_matrix = np.array([[]])
     curr_routes = []
 
-
     def __init__(self):
         """
             Override of the __init__ method in order to instantiate a new Instance Object with new values.
@@ -53,7 +52,6 @@ class Instance(object):
 
         self.distance_matrix = np.array([[]])
         self.curr_routes = []
-
 
     def __str__(self):
         """
@@ -74,7 +72,6 @@ class Instance(object):
             output += str(line) + "\n"
 
         return output
-
 
     def show_current_routes(self):
         """
@@ -100,7 +97,6 @@ class Instance(object):
         for i in customers:
             for j in customers:
                 self.distance_matrix[i.id, j.id] = compute_distance(i, j)
-
 
     def create_feasible_routes(self, nodes_list):
         """
@@ -136,7 +132,6 @@ class Instance(object):
 
         return routes
 
-
     def create_main_routes(self):
         """
         This method is the core of the Clustering Phase. It computes the main routes by chaining the linehauls
@@ -145,15 +140,17 @@ class Instance(object):
         :return: nothing, the main routes list is an attribute of the instance itself
         """
 
-        linehauls_routes = self.create_feasible_routes(self.linehaul_list)  # Computing feasible routes of linehauls only
-        backhauls_routes = self.create_feasible_routes(self.backhaul_list)  # Computing feasible routes of backhauls only
+        # Computes feasible routes of linehauls only
+        linehauls_routes = self.create_feasible_routes(self.linehaul_list)
+        # Computes feasible routes of backhauls only
+        backhauls_routes = self.create_feasible_routes(self.backhaul_list)
 
         # If there are more backhauls routes then linehaul routes
         while len(backhauls_routes) > len(linehauls_routes):
-            # Creating one more linehaul route by removing a node from the first route
+            # Creates one more linehaul route by removing a node from the first route
             # that has at least two linehaul nodes
 
-            # Find the index of the first route with at least 2 linehauls
+            # Finds the index of the first route with at least 2 linehauls
             idx = 0
             while len(linehauls_routes[idx]) <= 1:
                 idx += 1
@@ -167,7 +164,7 @@ class Instance(object):
             # creates the new linehaul route
             linehauls_routes.append([node])
 
-        # Linking linehaul and backhaul routes in pairs, as long as there are backhaul routes
+        # Linkes linehaul and backhaul routes in pairs, as long as there are backhaul routes
         for i in range(len(backhauls_routes)):
             self.curr_routes.append(
                 Route(self.depot_node, linehauls_routes[i], backhauls_routes[i])
@@ -197,7 +194,6 @@ class Instance(object):
                 Route(self.depot_node, [line_node], [back_node])
             )
 
-
     def get_unified_routes(self):
         """
             Concatenates the deposit, the linehauls, the backhauls and finally again the deposit
@@ -213,12 +209,11 @@ class Instance(object):
 
         return unified_routes
 
-
     def mix_routes_random(self):
         """
             Mixes the routes by performing legal exchanges (i.e that respect the capacity constraint)
 
-            # excchange type:
+            # exchange type:
             #   L/B: move a node from a route to another, without exchange with other nodes (i.e. a legal relocate move)
             #   LL (BB): legal exchange between linehauls (bakchauls) nodes
             #   BL (LB): legal exchange between a backhaul (linehaul) with a linehaul (backhaul)
@@ -237,15 +232,14 @@ class Instance(object):
             move = moves[choose]
 
             if len(move) == 2:
-                self.random_legal_exchange(route1, route2, move) # LL or BB or BL or LB
+                self.random_legal_exchange(route1, route2, move)  # LL or BB or BL or LB
             else:
-                self.random_legal_relocate(route1, route2, move) # L or B
+                self.random_legal_relocate(route1, route2, move)  # L or B
 
         # Final random permutation for the individual linehaul and backhaul lists of each route
         for route in self.curr_routes:
             rnd.shuffle(route.linehauls)
             rnd.shuffle(route.backhauls)
-
 
     def random_legal_relocate(self, route1, route2, relocate_type):
         """
@@ -271,7 +265,9 @@ class Instance(object):
                     idx = rnd.randint(0, len(self.curr_routes[route1].linehauls) - 1)
 
                     # Check constraints
-                    if (self.curr_routes[route2].linehauls_load() + self.curr_routes[route1].linehauls[idx].load <= self.vehicle_load) and \
+                    if (self.curr_routes[route2].linehauls_load() +
+                        self.curr_routes[route1].linehauls[idx].load <=
+                        self.vehicle_load) and \
                        (len(self.curr_routes[route1].linehauls) >= 2):
 
                         # appends the node to route2
@@ -289,7 +285,7 @@ class Instance(object):
                 relocate = False  # True if the relocate happens, False otherwise
                 attempts = 1  # relocate attempts
 
-                #If the route contains at least one backhaul
+                # If the route contains at least one backhaul
                 if len(self.curr_routes[route1].backhauls) >= 1:
 
                     while not relocate and (attempts <= (len(self.curr_routes[route1].backhauls))):
@@ -299,7 +295,9 @@ class Instance(object):
                         idx = rnd.randint(0, len(self.curr_routes[route1].backhauls) - 1)
 
                         # Check constraints
-                        if (self.curr_routes[route2].backhauls_load() + self.curr_routes[route1].backhauls[idx].load <= self.vehicle_load) and \
+                        if (self.curr_routes[route2].backhauls_load() +
+                            self.curr_routes[route1].backhauls[idx].load <=
+                            self.vehicle_load) and \
                            (len(self.curr_routes[route2].linehauls) >= 1):
 
                             backhaul_to_move = self.curr_routes[route1].backhauls[idx]
@@ -331,7 +329,8 @@ class Instance(object):
 
             # repeat until there is an exchange or the number of attempts are over
             while not exchange and \
-                  (attempts <= (len(self.curr_routes[route1].linehauls)) *(len(self.curr_routes[route2].linehauls))):
+                  (attempts <= (len(self.curr_routes[route1].linehauls)) *
+                               (len(self.curr_routes[route2].linehauls))):
 
                 # generates two random linehaul indices from the two routes
                 idx1 = rnd.randint(0, len(self.curr_routes[route1].linehauls) - 1)
@@ -359,7 +358,8 @@ class Instance(object):
 
             # repeat until there is an exchange or the number of attempts are over
             while not exchange and \
-                  (attempts <= (len(self.curr_routes[route1].backhauls)) * (len(self.curr_routes[route2].backhauls))):
+                  (attempts <= (len(self.curr_routes[route1].backhauls)) *
+                               (len(self.curr_routes[route2].backhauls))):
 
                 # generates two random backhauls indices from the two routes
                 idx1 = rnd.randint(0, len(self.curr_routes[route1].backhauls) - 1)
@@ -388,7 +388,8 @@ class Instance(object):
 
             # repeat until there is an exchange or the number of attempts are over
             while not exchange and \
-                  (attempts <= (len(self.curr_routes[route1].backhauls)) * (len(self.curr_routes[route2].linehauls))):
+                  (attempts <= (len(self.curr_routes[route1].backhauls)) *
+                               (len(self.curr_routes[route2].linehauls))):
 
                 # generates a random backhaul index from route 1
                 idx1 = rnd.randint(0, len(self.curr_routes[route1].backhauls) - 1)
@@ -433,7 +434,8 @@ class Instance(object):
 
             # repeat until there is an exchange or the number of attempts are over
             while not exchange and \
-                  (attempts <= (len(self.curr_routes[route1].linehauls)) * (len(self.curr_routes[route2].backhauls))):
+                  (attempts <= (len(self.curr_routes[route1].linehauls)) *
+                               (len(self.curr_routes[route2].backhauls))):
 
                 # generates a random linehaul index from route1
                 idx1 = rnd.randint(0, len(self.curr_routes[route1].linehauls) - 1)

@@ -40,21 +40,21 @@ class Route(object):
         :return: a string representing the Route object D -> L -> ... -> L [-> B -> ... -> B] -> D.
         """
 
-        # Linking Depot node
+        # Depot node
         output = " D" + str(self.depot_node.id)
 
-        # Linking linehauls customers
+        # linehauls customers
         for l in self.linehauls:
             output += " L" + str(l.id)
 
-        # Linking backhauls customers
+        # backhauls customers
         for b in self.backhauls:
             output += " B" + str(b.id)
 
-        # Linking Depot node
+        # Depot node
         output += " D" + str(self.depot_node.id)
 
-        # Uncomment here to linking loads
+        # Uncomment here for the loads
         '''
         output += " ----- LoadL " + str(self.linehauls_load())
         output += " ----- LoadB " + str(self.backhauls_load())
@@ -69,18 +69,18 @@ class Route(object):
 
         :return: a string, representing the Route object 0 -> L.id ... L.id -> B.id ... B.id -> 0.
         """
-        # Linking depot node
+        # depot node
         output = str(self.depot_node.id)
 
-        # Linking Linehauls nodes
+        # Linehauls nodes
         for l in self.linehauls:
             output += " " + str(l.id)
 
-        # Linking Backhauls nodes
+        # Backhauls nodes
         for b in self.backhauls:
             output += " " + str(b.id)
 
-        # Linking depot node
+        # depot node
         output += " " + str(self.depot_node.id)
 
         return output

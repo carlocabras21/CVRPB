@@ -27,7 +27,7 @@ if __name__ == "__main__":
         n_iterations = 0  # number of Best Exchange iterations
         start = time.time()
 
-        # loades the instance
+        # loads the instance
         print("\nLoading Instance: " + instance_name[0:2])
         instance = load_instance(instance_name)
 
@@ -52,9 +52,9 @@ if __name__ == "__main__":
 
         end_cp = time.time() - start
 
-        #instance.show_current_routes()
+        # instance.show_current_routes()
 
-        # Loades the instance lower bound
+        # Loads the instance lower bound
         lower_bound = load_lower_bound(instance_name)
 
         # Computes the initial objective function
@@ -80,7 +80,7 @@ if __name__ == "__main__":
             # Computes the objective function of mixed routes
             mix_objf = objective_function(instance.distance_matrix, instance.curr_routes)
 
-            # checks if it is improving
+            # checks if the objective function is improved
             if mix_objf < min_objf:
                 min_objf = mix_objf
                 best_routes = instance.curr_routes

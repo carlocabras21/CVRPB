@@ -1,6 +1,6 @@
 from scipy.spatial import distance
 
-# Types for a customer node
+# Types of the nodes
 DEPOT_TYPE = 0
 LINEHAUL_TYPE = 1
 BACKHAUL_TYPE = 2
@@ -297,17 +297,21 @@ def minimize_fo(instance):
         This function minimizes the objective function's value by implementing the Bext Exchange approach.
 
         main cycle:
-            For each node in each route, this method check if exchanging it with one another node the
-            objective function improves. If so, save the coordinates of the exchange
-            (i.e. indices of routes and nodes in the routes) and update the value of the objective
-            function if it's less than the previous maximum.
-            Each exchange must respect all the constraints of the model.
-            After executing all possible comparisons for possible exchanges, the indexes of the route node
-            will be saved, allowing the best exchange to be carried out
-            So after this, the best exchange was made and the entire procedure is repeated to the next ndoe.
+            For each node in each route, this method checks if after exchanging it with another
+            nodes the objective function improves. If so, it saves the coordinates of the exchange
+            (i.e. indices of routes and nodes in the routes) and updates the value of the objective
+            function if it's less than the previous minimum.
+            Each exchange must respect all the model constraints.
+            After executing all possible comparisons for possible exchanges, best exchange for
+            that node is done and is repeated for all the others.
 
         Repeat this "main cycle" while the objective function is improving, that is its
         value is descending.
+
+        Briefly:
+        while the objective function is improving:
+            for each node in each route:
+                best exchange
 
         So, an exchange is possible if it respects the capacity constraint and:
         1) the first node is a linehaul and the second node is a linehaul
@@ -328,7 +332,7 @@ def minimize_fo(instance):
         (in this way the precedence constraint L -> B is respected)
 
         For a detailed explanation of these exchanges, see the
-        "final_exchange" function.
+        "best_exchange" function.
 
         :param instance: An Instance object, the CVRPB instance
         :return: nothing
@@ -367,7 +371,6 @@ def minimize_fo(instance):
 
                 # first node type
                 type_node_m = routes[i][m].type
-
 
                 if routes[i][m].type == BACKHAUL_TYPE and routes[i][m - 1].type == DEPOT_TYPE:
                     print("WRONG ROUTE:")
