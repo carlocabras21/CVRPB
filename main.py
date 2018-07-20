@@ -6,7 +6,7 @@ from utils.utils import objective_function, minimize_fo
 
 # Main
 if __name__ == "__main__":
-    file_name = "A2.txt"
+    file_name = "A1.txt"
     # file_name = "all"
 
     # check
@@ -30,6 +30,7 @@ if __name__ == "__main__":
         # loades the instance
         print("\nLoading Instance")
         instance = load_instance(instance_name)
+        print(instance)
 
         # number of iterations based on instance name (i.e. based on number of customers)
         if instance_name.startswith(('A', 'B')):

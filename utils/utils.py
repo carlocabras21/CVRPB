@@ -7,12 +7,12 @@ BACKHAUL_TYPE = 2
 
 def compute_distance(i, j):
     """
-    This method computes the euclidean distance between two nodes (customers) i, j.
+        This method computes the euclidean distance between two nodes (customers) i, j.
 
-    :param i: A Node object, the first node
-    :param j: A Node object, the second node
-    :return: the euclidean distance between the two nodes
-    """
+        :param i: A Node object, the first node
+        :param j: A Node object, the second node
+        :return: the euclidean distance between the two nodes
+        """
     return distance.euclidean([i.x, i.y], [j.x, j.y])
 
 
