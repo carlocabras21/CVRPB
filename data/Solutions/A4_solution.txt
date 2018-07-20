@@ -5,38 +5,38 @@ Backhaul Customers: 5
 Capacity: 4050
 
 LOCAL SEARCH WITH BEST EXCHANGE
-Total cost: 172920.155894
+Total cost: 165919.720986
 Lower Bound: 155796.000000
-GAP: 0.109914
+GAP: 0.064981
 
 TIMING
-Construction phase time: 0.014445
-Local search time: 11.382488
-Total time: 11.396933
+Construction phase time: 0.013489
+Local search time: 10.238141
+Total time: 10.251630
 
 SOLUTION
 Routes: 3
 
 ROUTE: 0
-Cost: 57579.162361
-Delivery load: 3162.000000
+Cost: 92497.661370
+Delivery load: 3910.000000
 Pick-Up load: 549.000000
-Customers in Route: 7
+Customers in Route: 9
 Vertex sequence:
-0 8 25 13 17 20 22 1 0
+0 22 6 19 16 21 18 7 23 1 0
 
 ROUTE: 1
-Cost: 67864.731630
-Delivery load: 2856.000000
+Cost: 107021.301716
+Delivery load: 3797.000000
 Pick-Up load: 1991.000000
-Customers in Route: 9
+Customers in Route: 11
 Vertex sequence:
-0 15 21 14 12 10 4 3 2 5 0
+0 14 25 8 15 10 12 13 2 5 3 4 0
 
 ROUTE: 2
-Cost: 90780.901256
-Delivery load: 4031.000000
+Cost: 38180.741720
+Delivery load: 2342.000000
 Pick-Up load: 0.000000
-Customers in Route: 9
+Customers in Route: 5
 Vertex sequence:
-0 9 24 6 18 16 7 23 19 11 0
+0 9 24 20 17 11 0

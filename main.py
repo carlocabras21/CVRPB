@@ -6,8 +6,8 @@ from utils.utils import objective_function, minimize_fo
 
 # Main
 if __name__ == "__main__":
-    file_name = "N1.txt"
-    # file_name = "all"
+    file_name = "C4.txt"
+    #file_name = "all"
 
     # check
     if file_name == "all":
