@@ -6,7 +6,7 @@ from utils.utils import objective_function, minimize_fo
 
 # Main
 if __name__ == "__main__":
-    file_name = "A1.txt"
+    file_name = "B1.txt"
     # file_name = "all"
 
     # check
@@ -95,11 +95,4 @@ if __name__ == "__main__":
         print("\nGenerating Output File")
 
         # Generates the output file
-        create_instance_solution(
-            instance,
-            instance_name[0:2],
-            min_objf,
-            lower_bound,
-            (gap / 100),
-            end_cp,
-            end_ls)
+        create_instance_solution(instance, instance_name[0:2], min_objf, lower_bound, (gap / 100), end_cp, end_ls)

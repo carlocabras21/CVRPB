@@ -65,7 +65,7 @@ class Instance(object):
         output = "Number of Customers: " + str(self.n_vehicles) + \
                  "\nNumber of Vehicles: " + str(self.n_vehicles) + \
                  "\nVehicle Load: " + str(self.vehicle_load) + \
-                 "\n" + str(self.depot_node)
+                 "\n" + str(self.depot_node) + "\n"
 
         for back in self.backhaul_list:
             output += str(back) + "\n"
@@ -209,12 +209,12 @@ class Instance(object):
 
     def mix_routes_random(self):
         """
-            Mixes the routes by performing feasible exchanges (i.e that respect the capacity constraint)
+            Mixes the routes by performing legal exchanges (i.e that respect the capacity constraint)
 
             # excchange type:
-            #   L/B: move a node from a route to another, without exchange with other nodes (i.e. a feasible relocate move)
-            #   LL (BB): feasible exchange between linehauls (bakchauls) nodes
-            #   BL (LB): feasible exchange between a backhaul (linehaul) with a linehaul (backhaul) (only if is legal)
+            #   L/B: move a node from a route to another, without exchange with other nodes (i.e. a legal relocate move)
+            #   LL (BB): legal exchange between linehauls (bakchauls) nodes
+            #   BL (LB): legal exchange between a backhaul (linehaul) with a linehaul (backhaul)
             """
         moves = ["L", "B", "LL", "BB", "BL", "LB"]
         n_moves = 500
@@ -240,254 +240,226 @@ class Instance(object):
             rnd.shuffle(route.backhauls)
 
 
-    def random_legal_relocate(self, r1, r2, relocate_type):
+    def random_legal_relocate(self, route1, route2, relocate_type):
         """
-            Moves a node of type relocate_type from route r1 to route r2,
-            within all the constraints
-            :param r1: the route from which we remove the node
-            :param r2: the to which we add the node
-            :param relocate_type: the type of the node
+            This method makes a relocate move given two routes and a node of one of them
+
+            :param route1: the route from which we remove the node
+            :param route2: the to which we add the node
+            :param relocate_type: the type of the relocate move
             :return:
             """
 
-        if r1 != r2:
-            # we move the node only if the routes are different, i.e. the node goes
-            # from one route to another
-
+        if route1 != route2:
             if relocate_type == "L":
-                # we have to move a Linehaul node from r1 to r2    
+                # move a Linehaul node from route1 to route2
 
                 relocate = False  # True if the relocate happens, False otherwise
                 attempts = 1  # relocate attempts
 
-                while not relocate and (attempts <= (len(self.curr_routes[r1].linehauls))):
-                    # repeat until there is a relocate or until we finish the numer of attempts
+                while not relocate and (attempts <= (len(self.curr_routes[route1].linehauls))):
+                    # repeat until the relocate move happens or until we finish the numer of attempts
 
-                    # generates a random linehaul index
-                    idx1 = rnd.randint(0, len(self.curr_routes[r1].linehauls) - 1)
+                    # generates a random linehaul node index from route1
+                    idx = rnd.randint(0, len(self.curr_routes[route1].linehauls) - 1)
 
-                    if (self.curr_routes[r2].linehauls_load() + self.curr_routes[r1].linehauls[idx1].load <=
-                            self.vehicle_load) and (len(self.curr_routes[r1].linehauls) >= 2):
-                        # if the capacity constraint is respected
+                    # Check constraints
+                    if (self.curr_routes[route2].linehauls_load() + self.curr_routes[route1].linehauls[idx].load <= self.vehicle_load) and \
+                       (len(self.curr_routes[route1].linehauls) >= 2):
 
-                        # appends the node to r2
-                        self.curr_routes[r2].linehauls.append(self.curr_routes[r1].linehauls[idx1])
+                        # appends the node to route2
+                        self.curr_routes[route2].linehauls.append(self.curr_routes[route1].linehauls[idx])
 
-                        # removes the node from r1
-                        self.curr_routes[r1].linehauls.remove(self.curr_routes[r1].linehauls[idx1])
+                        # removes the node from route1
+                        self.curr_routes[route1].linehauls.remove(self.curr_routes[route1].linehauls[idx])
 
                         relocate = True
 
                     attempts += 1
-            else:  # B
-                # we have to move a Backhaul node from r1 to r2   
+            else:
+                # move a Backhaul node from route1 to route2
 
                 relocate = False  # True if the relocate happens, False otherwise
                 attempts = 1  # relocate attempts
 
-                if len(self.curr_routes[r1].backhauls) >= 1:
-                    # if there are at least two bakchauls nodes; with the purpose of not removing
-                    # the only backhaul node from route r1
+                #If the route contains at least one backhaul
+                if len(self.curr_routes[route1].backhauls) >= 1:
 
-                    while not relocate and (attempts <= (len(self.curr_routes[r1].backhauls))):
-                        # repeat until there is a relocate or until we finish the numer of attempts
+                    while not relocate and (attempts <= (len(self.curr_routes[route1].backhauls))):
+                        # repeat until the relocate move happens or until we finish the numer of attempts
 
                         # generates a random backhaul index
-                        idx1 = rnd.randint(0, len(self.curr_routes[r1].backhauls) - 1)
+                        idx = rnd.randint(0, len(self.curr_routes[route1].backhauls) - 1)
 
-                        if (self.curr_routes[r2].backhauls_load() + self.curr_routes[r1].backhauls[
-                            idx1].load <= self.vehicle_load) and \
-                                (len(self.curr_routes[r2].linehauls) >= 1):
-                            # if the capacity constraint is respected
+                        # Check constraints
+                        if (self.curr_routes[route2].backhauls_load() + self.curr_routes[route1].backhauls[idx].load <= self.vehicle_load) and \
+                           (len(self.curr_routes[route2].linehauls) >= 1):
 
-                            backhaul_to_move = self.curr_routes[r1].backhauls[idx1]
+                            backhaul_to_move = self.curr_routes[route1].backhauls[idx]
 
-                            # appends the node to r2
-                            self.curr_routes[r2].backhauls.append(backhaul_to_move)
+                            # appends the node to route2
+                            self.curr_routes[route2].backhauls.append(backhaul_to_move)
 
-                            # removes the node from r1
-                            self.curr_routes[r1].backhauls.remove(self.curr_routes[r1].backhauls[idx1])
+                            # removes the node from route1
+                            self.curr_routes[route1].backhauls.remove(self.curr_routes[route1].backhauls[idx])
 
                             relocate = True
 
                         attempts += 1
 
-    def random_legal_exchange(self, r1, r2, exchange_type):
+    def random_legal_exchange(self, route1, route2, exchange_type):
         """
-        Computes an exchange between route r1 and route r2 of type exchange type,
-        within all the constraints.
+            Computes an legal exchange between route1 and route2.
 
-        For a detailed explanation of how an exchange is performed, see the
-        "finale_exchange" and "minimize_fo" functions
-
-        :param r1: the route from which we remove the node
-        :param r2: the to which we add the node
-        :param exchange_type: the type of the exchange
-        :return:
-        """
+            :param route1: the route from which we remove the node
+            :param route2: the to which we add the node
+            :param exchange_type: the type of the exchange
+            :return:
+            """
 
         exchange = False  # True when an exchange happens, False otherwise
         attempts = 1  # number of exchange attempts
 
         if exchange_type == "LL":
-            # exchange between two linehaul nodes
 
             # repeat until there is an exchange or the number of attempts are over
             while not exchange and \
-                    (attempts <= (len(self.curr_routes[r1].linehauls)) *
-                                 (len(self.curr_routes[r2].linehauls))):
+                  (attempts <= (len(self.curr_routes[route1].linehauls)) *(len(self.curr_routes[route2].linehauls))):
 
-                # generates two random linehaul indices from zero to the numbers of linehauls
-                # in each route minus 1
-                idx1 = rnd.randint(0, len(self.curr_routes[r1].linehauls) - 1)
-                idx2 = rnd.randint(0, len(self.curr_routes[r2].linehauls) - 1)
+                # generates two random linehaul indices from the two routes
+                idx1 = rnd.randint(0, len(self.curr_routes[route1].linehauls) - 1)
+                idx2 = rnd.randint(0, len(self.curr_routes[route2].linehauls) - 1)
 
                 # if they aren't the same node and the capacity constraint holds
-                if not (idx1 == idx2 and self.curr_routes[r1] == self.curr_routes[r2]) and \
-                    (self.curr_routes[r1].linehauls_load() -
-                     self.curr_routes[r1].linehauls[idx1].load +
-                     self.curr_routes[r2].linehauls[idx2].load <=
-                     self.vehicle_load) and \
-                    (self.curr_routes[r2].linehauls_load() -
-                     self.curr_routes[r2].linehauls[idx2].load +
-                     self.curr_routes[r1].linehauls[idx1].load <=
-                     self.vehicle_load):
-                    # exchange
-                    supp_node = self.curr_routes[r1].linehauls[idx1]
-                    self.curr_routes[r1].linehauls[idx1] = self.curr_routes[r2].linehauls[idx2]
-                    self.curr_routes[r2].linehauls[idx2] = supp_node
+                if not (idx1 == idx2 and self.curr_routes[route1] == self.curr_routes[route2]) and \
+                    (self.curr_routes[route1].linehauls_load() -
+                     self.curr_routes[route1].linehauls[idx1].load +
+                     self.curr_routes[route2].linehauls[idx2].load <= self.vehicle_load) and \
+                    (self.curr_routes[route2].linehauls_load() -
+                     self.curr_routes[route2].linehauls[idx2].load +
+                     self.curr_routes[route1].linehauls[idx1].load <= self.vehicle_load):
+
+                    # Exchange LL
+                    supp_node = self.curr_routes[route1].linehauls[idx1]
+                    self.curr_routes[route1].linehauls[idx1] = self.curr_routes[route2].linehauls[idx2]
+                    self.curr_routes[route2].linehauls[idx2] = supp_node
+
                     exchange = True
 
                 attempts += 1
 
         if exchange_type == "BB":
-            # exchange between two backhaul nodes
 
             # repeat until there is an exchange or the number of attempts are over
             while not exchange and \
-                    (attempts <= (len(self.curr_routes[r1].backhauls)) *
-                                 (len(self.curr_routes[r2].backhauls))):
+                  (attempts <= (len(self.curr_routes[route1].backhauls)) * (len(self.curr_routes[route2].backhauls))):
 
-                # generates two random backhauls indices from zero to the numbers of backhauls
-                # in each route minus 1
-                idx1 = rnd.randint(0, len(self.curr_routes[r1].backhauls) - 1)
-                idx2 = rnd.randint(0, len(self.curr_routes[r2].backhauls) - 1)
+                # generates two random backhauls indices from the two routes
+                idx1 = rnd.randint(0, len(self.curr_routes[route1].backhauls) - 1)
+                idx2 = rnd.randint(0, len(self.curr_routes[route2].backhauls) - 1)
 
                 # if they aren't the same node and the capacity constraint holds
-                if not (idx1 == idx2 and self.curr_routes[r1] == self.curr_routes[r2]) and \
-                    (self.curr_routes[r1].backhauls_load() -
-                     self.curr_routes[r1].backhauls[idx1].load +
-                     self.curr_routes[r2].backhauls[idx2].load <=
-                     self.vehicle_load) and \
-                    (self.curr_routes[r2].backhauls_load() -
-                     self.curr_routes[r2].backhauls[idx2].load +
-                     self.curr_routes[r1].backhauls[idx1].load <=
-                     self.vehicle_load):
+                if not (idx1 == idx2 and self.curr_routes[route1] == self.curr_routes[route2]) and \
+                    (self.curr_routes[route1].backhauls_load() -
+                     self.curr_routes[route1].backhauls[idx1].load +
+                     self.curr_routes[route2].backhauls[idx2].load <= self.vehicle_load) and \
+                    (self.curr_routes[route2].backhauls_load() -
+                     self.curr_routes[route2].backhauls[idx2].load +
+                     self.curr_routes[route1].backhauls[idx1].load <= self.vehicle_load):
 
                     # exchange
-                    supp_node = self.curr_routes[r1].backhauls[idx1]
-                    self.curr_routes[r1].backhauls[idx1] = self.curr_routes[r2].backhauls[idx2]
-                    self.curr_routes[r2].backhauls[idx2] = supp_node
+                    supp_node = self.curr_routes[route1].backhauls[idx1]
+                    self.curr_routes[route1].backhauls[idx1] = self.curr_routes[route2].backhauls[idx2]
+                    self.curr_routes[route2].backhauls[idx2] = supp_node
+
                     exchange = True
 
                 attempts += 1
 
-        # exchange between the first backhaul of the first route and
-        # the last linehaul of the second route
-        if exchange_type == "BL" and len(self.curr_routes[r1].backhauls) >= 1:
+        if exchange_type == "BL" and len(self.curr_routes[route1].backhauls) >= 1:
             # if there are at least 2 backhaul nodes in the first route
 
             # repeat until there is an exchange or the number of attempts are over
-            while not exchange and (
-                        attempts <= (len(self.curr_routes[r1].backhauls)) *
-                                    (len(self.curr_routes[r2].linehauls))):
+            while not exchange and \
+                  (attempts <= (len(self.curr_routes[route1].backhauls)) * (len(self.curr_routes[route2].linehauls))):
 
-                # generates a random backhaul index from zero to the numbers of backhauls -1
-                idx1 = rnd.randint(0, len(self.curr_routes[r1].backhauls) - 1)
-                # generates a random linehaul index from zero to the numbers of linehauls -1
-                idx2 = rnd.randint(0, len(self.curr_routes[r2].linehauls) - 1)
+                # generates a random backhaul index from route 1
+                idx1 = rnd.randint(0, len(self.curr_routes[route1].backhauls) - 1)
+                # generates a random linehaul index from route 2
+                idx2 = rnd.randint(0, len(self.curr_routes[route2].linehauls) - 1)
 
-                # if the capacity constraints holds and there are at least
-                # 2 linehauls in the first route, with the purpose of not
-                # deleting that linehaul route
-                if (self.curr_routes[r1].linehauls_load() +
-                    self.curr_routes[r2].linehauls[idx2].load <=
-                    self.vehicle_load) and \
-                   (self.curr_routes[r2].backhauls_load() +
-                    self.curr_routes[r1].backhauls[idx1].load <=
-                    self.vehicle_load) and \
-                   (len(self.curr_routes[r2].linehauls) >= 2):
+                # if the capacity constraints holds and there are at least 2 linehauls in the second route
+                # (to avoid only backhauls routes)
+                if (self.curr_routes[route1].linehauls_load() +
+                    self.curr_routes[route2].linehauls[idx2].load <= self.vehicle_load) and \
+                   (self.curr_routes[route2].backhauls_load() +
+                    self.curr_routes[route1].backhauls[idx1].load <= self.vehicle_load) and \
+                   (len(self.curr_routes[route2].linehauls) >= 2):
 
                     # exchange
-                    # gets the last backhaul of the first route
-                    supp_node = self.curr_routes[r1].backhauls[idx1]
+                    # gets the backhaul from the first route
+                    supp_node = self.curr_routes[route1].backhauls[idx1]
 
                     # inserts it in the head of backhauls list of the second route
-                    self.curr_routes[r2].backhauls = [supp_node] + self.curr_routes[r2].backhauls
+                    self.curr_routes[route2].backhauls = [supp_node] + self.curr_routes[route2].backhauls
 
                     # removes it from route 1
-                    self.curr_routes[r1].backhauls.remove(supp_node)
+                    self.curr_routes[route1].backhauls.remove(supp_node)
 
                     # now the same but for the linehaul node
 
                     # gets the linehaul from the second route
-                    supp_node = self.curr_routes[r2].linehauls[idx2]
+                    supp_node = self.curr_routes[route2].linehauls[idx2]
 
                     # inserts it in the tail of linehauls list of the first node
-                    self.curr_routes[r1].linehauls.append(supp_node)
+                    self.curr_routes[route1].linehauls.append(supp_node)
 
                     # removes it from the second list
-                    self.curr_routes[r2].linehauls.remove(supp_node)
+                    self.curr_routes[route2].linehauls.remove(supp_node)
 
                     exchange = True
 
                 attempts += 1
 
-        # exchange between the last linehaul of the first route and
-        # the first backhaul of the second route
-        if exchange_type == "LB" and len(self.curr_routes[r2].backhauls) >= 1:
+        if exchange_type == "LB" and len(self.curr_routes[route2].backhauls) >= 1:
             # if there are at least 2 backhaul nodes in the second route
 
             # repeat until there is an exchange or the number of attempts are over
-            while not exchange and (
-                        attempts <= (len(self.curr_routes[r1].linehauls)) *
-                                    (len(self.curr_routes[r2].backhauls))):
+            while not exchange and \
+                  (attempts <= (len(self.curr_routes[route1].linehauls)) * (len(self.curr_routes[route2].backhauls))):
 
-                # generates a random linehaul index from zero to the numbers of linehauls -1
-                idx1 = rnd.randint(0, len(self.curr_routes[r1].linehauls) - 1)
-                # generates a random backhaul index from zero to the numbers of backhauls -1
-                idx2 = rnd.randint(0, len(self.curr_routes[r2].backhauls) - 1)
+                # generates a random linehaul index from route1
+                idx1 = rnd.randint(0, len(self.curr_routes[route1].linehauls) - 1)
+                # generates a random backhaul index from route2
+                idx2 = rnd.randint(0, len(self.curr_routes[route2].backhauls) - 1)
 
-                # if the capacity constraints holds and there are at least two linehauls
-                # in the first route
-                if (self.curr_routes[r1].backhauls_load() +
-                    self.curr_routes[r2].backhauls[idx2].load <=
-                    self.vehicle_load) and \
-                   (self.curr_routes[r2].linehauls_load() +
-                    self.curr_routes[r1].linehauls[idx1].load <=
-                    self.vehicle_load) and \
-                   (len(self.curr_routes[r1].linehauls) >= 2):
+                # if the capacity constraints holds and there are at least two linehauls in the first route
+                if (self.curr_routes[route1].backhauls_load() +
+                    self.curr_routes[route2].backhauls[idx2].load <= self.vehicle_load) and \
+                   (self.curr_routes[route2].linehauls_load() +
+                    self.curr_routes[route1].linehauls[idx1].load <= self.vehicle_load) and \
+                   (len(self.curr_routes[route1].linehauls) >= 2):
 
                     # exchange
-                    # gets the last linehaul of the first route
-                    supp_node = self.curr_routes[r1].linehauls[idx1]
+                    # gets the linehaul of the first route
+                    supp_node = self.curr_routes[route1].linehauls[idx1]
 
                     # inserts it in the tail of backhauls list of the second route
-                    self.curr_routes[r2].linehauls.append(supp_node)
+                    self.curr_routes[route2].linehauls.append(supp_node)
 
                     # removes it from route 1
-                    self.curr_routes[r1].linehauls.remove(supp_node)
+                    self.curr_routes[route1].linehauls.remove(supp_node)
 
                     # now the same but for the backhaul node
 
-                    # gets the first backhaul of the first route
-                    supp_node = self.curr_routes[r2].backhauls[idx2]
+                    # gets the backhaul of the first route
+                    supp_node = self.curr_routes[route2].backhauls[idx2]
 
                     # inserts it in the head of backhauls list of the first node
-                    self.curr_routes[r1].backhauls = [supp_node] + self.curr_routes[r1].backhauls
+                    self.curr_routes[route1].backhauls = [supp_node] + self.curr_routes[route1].backhauls
 
                     # removes it from route 2
-                    self.curr_routes[r2].backhauls.remove(supp_node)
+                    self.curr_routes[route2].backhauls.remove(supp_node)
 
                     exchange = True
 
