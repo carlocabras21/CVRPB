@@ -5,102 +5,102 @@ Backhaul Customers: 50
 Capacity: 5700
 
 LOCAL SEARCH WITH BEST EXCHANGE
-Total cost: 607792.126506
+Total cost: 630374.401313
 Lower Bound: 408101.000000
-GAP: 0.489318
+GAP: 0.544653
 
 TIMING
-Construction phase time: 0.504534
-Local search time: 145.289031
-Total time: 145.793565
+Construction phase time: 0.536875
+Local search time: 634.702923
+Total time: 635.239798
 
 SOLUTION
 Routes: 11
 
 ROUTE: 0
-Cost: 141493.514215
-Delivery load: 5567.000000
-Pick-Up load: 5354.000000
-Customers in Route: 23
+Cost: 73328.245110
+Delivery load: 3992.000000
+Pick-Up load: 4065.000000
+Customers in Route: 17
 Vertex sequence:
-0 62 55 118 77 148 121 74 51 60 102 40 9 8 11 15 25 19 6 38 12 31 42 2 0
+0 89 126 113 144 64 147 99 140 10 34 13 50 20 36 22 5 30 0
 
 ROUTE: 1
-Cost: 123154.448269
-Delivery load: 5554.000000
-Pick-Up load: 4370.000000
-Customers in Route: 20
+Cost: 94732.054026
+Delivery load: 5179.000000
+Pick-Up load: 4228.000000
+Customers in Route: 18
 Vertex sequence:
-0 107 65 73 123 114 133 116 97 130 98 67 145 45 21 1 14 30 17 28 27 0
+0 80 138 86 106 122 75 98 82 129 70 43 33 39 28 26 18 46 23 0
 
 ROUTE: 2
-Cost: 65942.456416
-Delivery load: 5585.000000
-Pick-Up load: 1123.000000
-Customers in Route: 14
-Vertex sequence:
-0 61 131 96 78 92 134 103 63 79 70 7 4 3 24 0
-
-ROUTE: 3
-Cost: 71058.431101
-Delivery load: 4849.000000
-Pick-Up load: 2805.000000
+Cost: 72027.248936
+Delivery load: 5034.000000
+Pick-Up load: 3460.000000
 Customers in Route: 15
 Vertex sequence:
-0 76 100 142 129 147 150 117 149 93 75 5 34 49 35 22 0
+0 55 71 112 90 52 141 127 130 97 35 49 47 48 17 27 0
 
-ROUTE: 4
-Cost: 38446.994930
-Delivery load: 4262.000000
-Pick-Up load: 0.000000
-Customers in Route: 7
-Vertex sequence:
-0 68 85 88 137 106 122 141 0
-
-ROUTE: 5
-Cost: 31515.360179
-Delivery load: 3564.000000
-Pick-Up load: 1172.000000
-Customers in Route: 7
-Vertex sequence:
-0 104 119 108 115 109 26 41 0
-
-ROUTE: 6
-Cost: 62121.775425
-Delivery load: 4169.000000
-Pick-Up load: 3714.000000
-Customers in Route: 16
-Vertex sequence:
-0 124 110 127 128 143 136 126 47 36 20 50 13 10 23 29 16 0
-
-ROUTE: 7
-Cost: 60556.705830
-Delivery load: 4789.000000
-Pick-Up load: 2693.000000
-Customers in Route: 13
-Vertex sequence:
-0 135 111 125 132 89 91 95 69 39 33 43 48 32 0
-
-ROUTE: 8
-Cost: 62563.516729
-Delivery load: 4695.000000
-Pick-Up load: 334.000000
-Customers in Route: 10
-Vertex sequence:
-0 120 113 144 64 66 86 53 71 112 46 0
-
-ROUTE: 9
-Cost: 54323.590019
-Delivery load: 5437.000000
-Pick-Up load: 451.000000
+ROUTE: 3
+Cost: 55819.641694
+Delivery load: 4403.000000
+Pick-Up load: 2267.000000
 Customers in Route: 12
 Vertex sequence:
-0 101 94 80 54 83 72 56 57 81 105 87 44 0
+0 104 119 76 65 73 56 72 2 15 8 11 25 0
+
+ROUTE: 4
+Cost: 50530.650189
+Delivery load: 5656.000000
+Pick-Up load: 482.000000
+Customers in Route: 11
+Vertex sequence:
+0 74 103 134 133 78 114 123 131 118 115 37 0
+
+ROUTE: 5
+Cost: 97770.941471
+Delivery load: 5445.000000
+Pick-Up load: 4288.000000
+Customers in Route: 22
+Vertex sequence:
+0 84 128 66 67 57 135 54 109 108 59 83 19 6 38 7 4 14 1 45 29 21 40 0
+
+ROUTE: 6
+Cost: 49813.347677
+Delivery load: 4538.000000
+Pick-Up load: 307.000000
+Customers in Route: 10
+Vertex sequence:
+0 124 110 93 149 117 150 79 63 142 12 0
+
+ROUTE: 7
+Cost: 37455.329358
+Delivery load: 4305.000000
+Pick-Up load: 1415.000000
+Customers in Route: 12
+Vertex sequence:
+0 87 139 120 136 143 116 146 58 3 24 32 44 0
+
+ROUTE: 8
+Cost: 65542.689756
+Delivery load: 4451.000000
+Pick-Up load: 900.000000
+Customers in Route: 11
+Vertex sequence:
+0 68 85 53 81 100 91 95 69 92 42 31 0
+
+ROUTE: 9
+Cost: 41450.716320
+Delivery load: 5533.000000
+Pick-Up load: 434.000000
+Customers in Route: 10
+Vertex sequence:
+0 105 132 125 145 137 88 94 101 111 41 0
 
 ROUTE: 10
-Cost: 72481.716149
-Delivery load: 5629.000000
-Pick-Up load: 823.000000
-Customers in Route: 13
+Cost: 55234.053732
+Delivery load: 5564.000000
+Pick-Up load: 993.000000
+Customers in Route: 12
 Vertex sequence:
-0 52 90 138 139 99 58 146 82 140 84 59 37 18 0
+0 62 107 51 60 96 102 61 77 121 148 9 16 0

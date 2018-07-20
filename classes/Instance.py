@@ -76,6 +76,13 @@ class Instance(object):
         return output
 
 
+    def show_current_routes(self):
+        """
+            This method show in a more meaningful representation the current routes.
+            """
+        for route in self.curr_routes:
+            print(route)
+
     def compute_distance_matrix(self):
         """
             This method produces the distance matrix by computing the Euclidean distance between each pair of nodes.

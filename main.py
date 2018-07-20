@@ -6,7 +6,7 @@ from utils.utils import objective_function, minimize_fo
 
 # Main
 if __name__ == "__main__":
-    file_name = "A1.txt"
+    file_name = "N1.txt"
     # file_name = "all"
 
     # check
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         start = time.time()
 
         # loades the instance
-        print("\nLoading Instance: " + instance_name )
+        print("\nLoading Instance: " + instance_name[0:2])
         instance = load_instance(instance_name)
 
         # number of iterations based on instance name (i.e. based on number of customers)
@@ -51,6 +51,8 @@ if __name__ == "__main__":
         instance.create_main_routes()
 
         end_cp = time.time() - start
+
+        #instance.show_current_routes()
 
         # Loades the instance lower bound
         lower_bound = load_lower_bound(instance_name)
